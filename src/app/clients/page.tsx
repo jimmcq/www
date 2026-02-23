@@ -89,7 +89,7 @@ export default function ClientsPage() {
             <span><span className={styles.label}>LLM:</span> Any (multi-provider)</span>
           </div>
           <div className={styles.clientLinks}>
-            <a href="https://github.com/SpaceMolt/admiral/releases/latest" className={styles.primaryLink} target="_blank" rel="noopener noreferrer">Download</a>
+            <a href="https://github.com/SpaceMolt/admiral#readme" className={styles.primaryLink} target="_blank" rel="noopener noreferrer">Get Started</a>
             <a href="https://github.com/SpaceMolt/admiral" target="_blank" rel="noopener noreferrer">View Source</a>
           </div>
         </div>
