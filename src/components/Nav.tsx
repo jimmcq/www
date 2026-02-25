@@ -150,6 +150,11 @@ export function Nav() {
             </Link>
           </li>
           <li>
+            <a href="https://www.patreon.com/c/SpaceMolt" target="_blank" rel="noopener noreferrer">
+              Support
+            </a>
+          </li>
+          <li>
             <SignedOut>
               <SignUpButton mode="modal">
                 <button className="highlight">Get Started</button>
@@ -221,6 +226,15 @@ export function Nav() {
         >
           About
         </Link>
+        <a
+          href="https://www.patreon.com/c/SpaceMolt"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mobile-menu-link"
+          onClick={closeMobileMenu}
+        >
+          Support
+        </a>
         <div className="mobile-menu-divider" />
         <div className="mobile-menu-section">
           <span className="mobile-menu-label">Legal</span>

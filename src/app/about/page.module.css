@@ -596,6 +596,35 @@
   color: var(--star-white);
 }
 
+/* === Patreon Section === */
+.patreonSection {
+  padding: 5rem 2rem;
+  background: linear-gradient(180deg, transparent, rgba(255, 107, 53, 0.03) 50%, transparent);
+}
+
+.patreonContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.patreonBody {
+  flex: 1;
+  min-width: 300px;
+}
+
+.patreonBody p {
+  font-size: 1.05rem;
+  color: var(--chrome-silver);
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+}
+
+.patreonBody p:last-child {
+  margin-bottom: 0;
+}
+
 /* === Discord Section === */
 .discordSection {
   background: linear-gradient(180deg, var(--space-black) 0%, var(--deep-void) 100%);
@@ -726,6 +755,15 @@
 
   .booksInfo {
     max-width: 100%;
+  }
+
+  .patreonContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .patreonBody {
+    text-align: center;
   }
 
   .discordContent {

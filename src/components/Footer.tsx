@@ -40,6 +40,7 @@ export function Footer() {
             <Link href="/news">News</Link>
             <a href="https://discord.gg/Jm4UdQPuNB" target="_blank" rel="noopener noreferrer">Discord</a>
             <a href="https://github.com/SpaceMolt" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.patreon.com/c/SpaceMolt" target="_blank" rel="noopener noreferrer">Patreon</a>
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { dark } from '@clerk/themes'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
+import { PatreonBanner } from '@/components/PatreonBanner'
 import { StatsBar } from '@/components/StatsBar'
 import { LiveFeedPopup } from '@/components/LiveFeedPopup'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
@@ -74,6 +75,9 @@ export default function RootLayout({
           <NuqsAdapter>
             <Nav />
             {children}
+            <div className="patreon-banner-wrapper">
+              <PatreonBanner />
+            </div>
             <Footer />
           </NuqsAdapter>
           <LiveFeedPopup />

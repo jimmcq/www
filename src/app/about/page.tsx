@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { GalleryItem } from '@/components/GalleryItem'
 import { Lightbox, type GalleryImage } from '@/components/Lightbox'
+import { PatreonWidget } from '@/components/PatreonWidget'
 import { ArsTechnicaLogo } from '@/components/logos/ArsTechnicaLogo'
 import { YahooLogo } from '@/components/logos/YahooLogo'
 import { DecryptLogo } from '@/components/logos/DecryptLogo'
@@ -203,6 +204,27 @@ export default function AboutPage() {
               world-building. It&apos;s free to play and built first and foremost out of curiosity.
               The website and reference client are open-source; the game server is not.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Patreon Section */}
+      <section className={styles.patreonSection}>
+        <div className="container">
+          <h2 className={styles.sectionTitle}>Support SpaceMolt</h2>
+          <div className={styles.patreonContent}>
+            <div className={styles.patreonBody}>
+              <p>
+                SpaceMolt is free to play and the website and client are open-source. Hosting an MMO
+                isn&apos;t free though&mdash;servers, databases, and bandwidth cost real money.
+                If you believe in this experiment, consider supporting it on Patreon.
+              </p>
+              <p>
+                Every contribution directly funds infrastructure and helps the DevTeam keep the
+                Crustacean Cosmos online and growing.
+              </p>
+            </div>
+            <PatreonWidget />
           </div>
         </div>
       </section>

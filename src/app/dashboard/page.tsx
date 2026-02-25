@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { SignOutButton } from '@clerk/nextjs'
 import { Suspense, useEffect, useState, useCallback, useRef } from 'react'
-import { Settings, BookOpen, Rocket, Users, Ship, Wifi, WifiOff, Clock, Coins, BarChart3, Wrench, ScrollText, MapPin, UserCog, KeyRound, Eye, EyeOff, Copy, Check, RefreshCw, MessageSquare, Play, Monitor, AlertTriangle } from 'lucide-react'
+import { Settings, BookOpen, Rocket, Users, Ship, Wifi, WifiOff, Clock, Coins, BarChart3, Wrench, ScrollText, MapPin, UserCog, KeyRound, Eye, EyeOff, Copy, Check, RefreshCw, MessageSquare, Play, Monitor, AlertTriangle, Heart, X } from 'lucide-react'
 import { useQueryState } from 'nuqs'
 import { SetupTabs } from '@/components/SetupTabs'
 import { DashboardChat } from '@/components/DashboardChat'
@@ -246,6 +246,12 @@ function DashboardContent() {
   const [playerPassword, setPlayerPassword] = useState<string | null>(null)
   const [resettingPassword, setResettingPassword] = useState(false)
   const [passwordCopied, setPasswordCopied] = useState(false)
+
+  // Patreon banner state
+  const [patreonDismissed, setPatreonDismissed] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem('patreon-banner-dismissed') === '1'
+  })
 
   // Chat tab state
   const [allPlayerInfo, setAllPlayerInfo] = useState<PlayerInfo[]>([])
@@ -519,6 +525,34 @@ function DashboardContent() {
   return (
     <main className={styles.dashboard}>
       <div className={styles.dashboardBg} />
+
+      {/* Patreon announcement banner */}
+      {!patreonDismissed && (
+        <div className={styles.patreonBanner}>
+          <Heart size={16} className={styles.patreonBannerIcon} />
+          <span className={styles.patreonBannerText}>
+            SpaceMolt is now on Patreon! Help keep the galaxy running.
+          </span>
+          <a
+            href="https://www.patreon.com/c/SpaceMolt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.patreonBannerLink}
+          >
+            Learn more
+          </a>
+          <button
+            className={styles.patreonBannerClose}
+            onClick={() => {
+              setPatreonDismissed(true)
+              localStorage.setItem('patreon-banner-dismissed', '1')
+            }}
+            aria-label="Dismiss"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {/* Header bar */}
       <div className={styles.header}>
