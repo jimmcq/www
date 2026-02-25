@@ -1,10 +1,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Heart, ExternalLink, Target, Users } from 'lucide-react'
+import { Heart, ExternalLink, Shield, Cpu, Star } from 'lucide-react'
 import styles from './PatreonWidget.module.css'
 
 const PATREON_URL = 'https://www.patreon.com/c/SpaceMolt'
+
+// Tier display order (highest first) with their style class names
+const TIER_CONFIG: Record<string, { icon: typeof Shield; styleKey: string; rank: number }> = {
+  'Fleet Admiral': { icon: Shield, styleKey: 'admiral', rank: 0 },
+  'Station Commander': { icon: Cpu, styleKey: 'commander', rank: 1 },
+  'Galactic Patron': { icon: Star, styleKey: 'patron', rank: 2 },
+}
 
 interface PatreonTier {
   title: string
@@ -42,75 +49,78 @@ export function PatreonWidget() {
       .catch(() => {})
   }, [])
 
-  const patronCount = data?.patron_count ?? 0
   const pledgeUrl = data?.pledge_url ?? PATREON_URL
-  const activeGoal = data?.goals?.find((g) => g.completed_percentage < 100)
   const tiers = data?.tiers ?? []
   const members = data?.members ?? []
+
+  // Group members by tier
+  const membersByTier: Record<string, string[]> = {}
+  for (const m of members) {
+    const tier = m.tier ?? 'Unknown'
+    if (!membersByTier[tier]) membersByTier[tier] = []
+    membersByTier[tier].push(m.name)
+  }
+
+  // Get the ordered tier columns (only tiers that exist in config)
+  const tierColumns = tiers
+    .filter((t) => t.title in TIER_CONFIG)
+    .sort((a, b) => TIER_CONFIG[a.title].rank - TIER_CONFIG[b.title].rank)
+
+  // Find the max member count to size columns evenly
+  const maxMembers = Math.max(
+    ...tierColumns.map((t) => (membersByTier[t.title] ?? []).length),
+    0,
+  )
 
   return (
     <div className={styles.widget}>
       <div className={styles.header}>
-        <Heart size={20} className={styles.heartIcon} />
-        <span className={styles.headerLabel}>Patreon</span>
+        <Heart size={22} className={styles.heartIcon} />
+        <h3 className={styles.title}>Support SpaceMolt</h3>
       </div>
 
-      <div className={styles.patronCount}>
-        <span className={styles.countValue}>{patronCount}</span>
-        <span className={styles.countLabel}>
-          {patronCount === 1 ? 'Patron' : 'Patrons'}
-        </span>
-      </div>
+      <p className={styles.description}>
+        SpaceMolt is free to play, built by AI, and run on real servers. Your support
+        keeps the galaxy online and funds new features, content, and infrastructure.
+      </p>
 
-      {activeGoal && (
-        <div className={styles.goal}>
-          <div className={styles.goalHeader}>
-            <Target size={14} />
-            <span>{activeGoal.title}</span>
-          </div>
-          <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${Math.min(activeGoal.completed_percentage, 100)}%` }}
-            />
-          </div>
-          <span className={styles.progressLabel}>
-            {Math.round(activeGoal.completed_percentage)}% funded
-          </span>
-        </div>
-      )}
+      {tierColumns.length > 0 && (
+        <div className={styles.tierGrid}>
+          {tierColumns.map((tier) => {
+            const config = TIER_CONFIG[tier.title]
+            const Icon = config.icon
+            const tierMembers = membersByTier[tier.title] ?? []
+            const tierStyle = config.styleKey
 
-      {tiers.length > 0 && (
-        <div className={styles.tiers}>
-          <div className={styles.tiersHeader}>Tiers</div>
-          {tiers.map((tier) => (
-            <div key={tier.title} className={styles.tier}>
-              <span className={styles.tierPrice}>
-                ${(tier.amount_cents / 100).toFixed(tier.amount_cents % 100 === 0 ? 0 : 2)}
-              </span>
-              <span className={styles.tierName}>{tier.title}</span>
-              {tier.patron_count > 0 && (
-                <span className={styles.tierPatrons}>{tier.patron_count}</span>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {members.length > 0 && (
-        <div className={styles.members}>
-          <div className={styles.membersHeader}>
-            <Users size={14} />
-            <span>Patrons</span>
-          </div>
-          {members.map((member) => (
-            <div key={member.name} className={styles.member}>
-              <span className={styles.memberName}>{member.name}</span>
-              {member.tier && (
-                <span className={styles.memberTier}>{member.tier}</span>
-              )}
-            </div>
-          ))}
+            return (
+              <div key={tier.title} className={`${styles.tierColumn} ${styles[tierStyle]}`}>
+                <div className={`${styles.tierHeader} ${styles[`${tierStyle}Header`]}`}>
+                  <Icon size={16} className={styles.tierIcon} />
+                  <span className={styles.tierName}>{tier.title}</span>
+                  <span className={styles.tierCount}>{tier.patron_count}</span>
+                </div>
+                <div className={styles.tierMembers}>
+                  {tierMembers.map((name) => (
+                    <div key={name} className={`${styles.memberName} ${styles[`${tierStyle}Name`]}`}>
+                      {name}
+                    </div>
+                  ))}
+                  {tierMembers.length === 0 && (
+                    <div className={styles.emptySlot}>Be the first</div>
+                  )}
+                  {/* Pad empty space so columns align */}
+                  {tierMembers.length > 0 && tierMembers.length < maxMembers &&
+                    Array.from({ length: maxMembers - tierMembers.length }).map((_, i) => (
+                      <div key={`pad-${i}`} className={styles.padSlot} />
+                    ))
+                  }
+                </div>
+                <div className={`${styles.tierPrice} ${styles[`${tierStyle}Price`]}`}>
+                  ${(tier.amount_cents / 100).toFixed(tier.amount_cents % 100 === 0 ? 0 : 2)}/mo
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
 
@@ -120,7 +130,8 @@ export function PatreonWidget() {
         rel="noopener noreferrer"
         className={styles.ctaButton}
       >
-        Support on Patreon
+        <Heart size={18} />
+        Support SpaceMolt on Patreon
         <ExternalLink size={14} />
       </a>
     </div>

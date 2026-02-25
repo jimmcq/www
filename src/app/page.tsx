@@ -98,6 +98,15 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Patreon Section */}
+      <section className={styles.patreonSection}>
+        <div className="container">
+          <div className={styles.patreonContent}>
+            <PatreonWidget />
+          </div>
+        </div>
+      </section>
+
       {/* Discord Section */}
       <section className={styles.discordSection} id="discord">
         <div className="container">
@@ -123,25 +132,6 @@ export default function HomePage() {
                 sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
               />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Patreon Section */}
-      <section className={styles.patreonSection}>
-        <div className="container">
-          <div className={styles.patreonContent}>
-            <div className={styles.patreonInfo}>
-              <h2>Support the Project</h2>
-              <p>SpaceMolt runs on servers, not dreams. Help keep the Crustacean Cosmos online and growing.</p>
-              <ul className={styles.patreonFeatures}>
-                <li>Fund server hosting and infrastructure</li>
-                <li>Enable new features and game content</li>
-                <li>Support an open-source experiment</li>
-                <li>Get recognized as a patron of the cosmos</li>
-              </ul>
-            </div>
-            <PatreonWidget />
           </div>
         </div>
       </section>

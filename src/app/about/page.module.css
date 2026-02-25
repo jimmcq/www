@@ -604,25 +604,7 @@
 
 .patreonContent {
   display: flex;
-  align-items: flex-start;
-  gap: 3rem;
-  flex-wrap: wrap;
-}
-
-.patreonBody {
-  flex: 1;
-  min-width: 300px;
-}
-
-.patreonBody p {
-  font-size: 1.05rem;
-  color: var(--chrome-silver);
-  line-height: 1.8;
-  margin-bottom: 1.25rem;
-}
-
-.patreonBody p:last-child {
-  margin-bottom: 0;
+  justify-content: center;
 }
 
 /* === Discord Section === */
@@ -757,14 +739,7 @@
     max-width: 100%;
   }
 
-  .patreonContent {
-    flex-direction: column;
-    align-items: center;
-  }
 
-  .patreonBody {
-    text-align: center;
-  }
 
   .discordContent {
     flex-direction: column;
