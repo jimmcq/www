@@ -779,7 +779,7 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
         const nodeRadius = isHomeSystem ? NODE_RADIUS * 1.6 : NODE_RADIUS
         const hoverScale = isHovered ? 1.5 : 1.0
         ctx.fillStyle =
-          isStronghold && !system.empire ? '#ff4444' : color
+          isStronghold && !system.empire ? '#f97316' : color
         ctx.beginPath()
         ctx.arc(
           pos.x,
@@ -864,7 +864,7 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
           const badgeX = pos.x
           const badgeY = pos.y + NODE_RADIUS + 10
 
-          ctx.fillStyle = 'rgba(45, 212, 191, 0.9)'
+          ctx.fillStyle = 'rgba(250, 204, 21, 0.9)'
           ctx.beginPath()
           ctx.roundRect(
             badgeX - badgeWidth / 2,
@@ -920,7 +920,7 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
         tooltipNameRef.current.textContent = system.name
         tooltipNameRef.current.style.color =
           system.is_stronghold && !system.empire
-            ? '#ff4444'
+            ? '#f97316'
             : system.empire_color || '#e8f4f8'
       }
 
@@ -931,7 +931,7 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
               ' \u00B7 Pirate Stronghold'
             : 'Pirate Stronghold'
           tooltipEmpireRef.current.style.display = 'block'
-          tooltipEmpireRef.current.style.color = '#ff6b6b'
+          tooltipEmpireRef.current.style.color = '#fb923c'
         } else if (system.empire) {
           tooltipEmpireRef.current.textContent =
             EMPIRE_NAMES[system.empire] || system.empire
@@ -1260,7 +1260,7 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
         poiPanelTitleRef.current.textContent = system.name
         poiPanelTitleRef.current.style.color =
           system.is_stronghold && !system.empire
-            ? '#ff4444'
+            ? '#f97316'
             : system.empire_color || '#e8f4f8'
       }
 
@@ -2077,8 +2077,8 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
           <div
             className={styles.legendDot}
             style={{
-              background: '#ff4444',
-              boxShadow: '0 0 6px rgba(255,68,68,0.6)',
+              background: '#f97316',
+              boxShadow: '0 0 6px rgba(249,115,22,0.6)',
             }}
           />
           <span className={styles.legendLabel}>Pirate Stronghold</span>
