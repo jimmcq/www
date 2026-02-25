@@ -864,7 +864,7 @@ export function GalaxyMap({ fullPage = false }: GalaxyMapProps) {
           const badgeX = pos.x
           const badgeY = pos.y + NODE_RADIUS + 10
 
-          ctx.fillStyle = 'rgba(45, 212, 191, 0.9)'
+          ctx.fillStyle = 'rgba(200, 200, 200, 0.9)'
           ctx.beginPath()
           ctx.roundRect(
             badgeX - badgeWidth / 2,
