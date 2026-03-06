@@ -61,6 +61,57 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
       case 'tick':
         d({ type: 'TICK', tick: (p.tick as number) || 0 })
         break
+      case 'action_result': {
+        // Deferred mutation result from the engine (travel, jump, mine, attack, etc.)
+        const arTick = p.tick as number
+        if (arTick > 0) d({ type: 'TICK', tick: arTick })
+
+        const result = (p.result || {}) as Record<string, unknown>
+        d({ type: 'OK', payload: result })
+
+        const arAction = result.action as string | undefined
+        // Resolve pending sendCommand promise using the command field
+        const arCommand = p.command as string | undefined
+        if (arCommand) {
+          const cb = pendingCallbacksRef.current.get(arCommand)
+          if (cb) {
+            pendingCallbacksRef.current.delete(arCommand)
+            cb(result)
+          }
+        }
+
+        // Auto-refresh system data after arriving at a POI or jumping to a new system
+        if (arAction === 'arrived' || arAction === 'jumped') {
+          sendRef.current({ type: 'get_system' })
+        }
+
+        // Handle auto dock/undock flags
+        if (p.auto_docked) {
+          d({ type: 'OK', payload: { action: 'dock', base: 'station' } })
+        }
+        if (p.auto_undocked) {
+          d({ type: 'OK', payload: { action: 'undock' } })
+        }
+        break
+      }
+      case 'action_error': {
+        // Deferred mutation error from the engine
+        const aeTick = p.tick as number
+        if (aeTick > 0) d({ type: 'TICK', tick: aeTick })
+
+        d({ type: 'ERROR', payload: { code: (p.code as string) || 'action_error', message: (p.message as string) || 'Action failed' } })
+
+        // Resolve pending sendCommand promise
+        const aeCommand = p.command as string | undefined
+        if (aeCommand) {
+          const cb = pendingCallbacksRef.current.get(aeCommand)
+          if (cb) {
+            pendingCallbacksRef.current.delete(aeCommand)
+            cb({ error: true, code: p.code, message: p.message } as Record<string, unknown>)
+          }
+        }
+        break
+      }
       case 'ok': {
         d({ type: 'OK', payload: p })
         const action = (p as Record<string, unknown>).action as string | undefined
@@ -127,6 +178,14 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
           // get_skills: has skills object + message
           else if ('skills' in p && typeof p.skills === 'object' && 'message' in p) {
             d({ type: 'SET_SKILLS_DATA', payload: p as unknown as SkillsData })
+          }
+          // get_status: has player + ship + modules (no action field)
+          else if ('player' in p && 'ship' in p && 'modules' in p) {
+            const player = p.player as Player | undefined
+            const ship = p.ship as Ship | undefined
+            if (player && ship) {
+              d({ type: 'STATUS_POLL', payload: { player, ship } })
+            }
           }
           // get_base_wrecks: has wrecks array
           else if (Array.isArray(p.wrecks)) {

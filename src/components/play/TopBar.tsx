@@ -25,7 +25,7 @@ function StatusBar({ value, max, color, label }: { value: number; max: number; c
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className={styles.statusValue}>{Math.round(pct)}%</span>
+      <span className={styles.statusValue}>{value}/{max}</span>
     </div>
   )
 }
