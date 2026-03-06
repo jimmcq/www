@@ -167,6 +167,12 @@
   color: var(--plasma-cyan);
 }
 
+.giftShips {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--plasma-cyan);
+}
+
 .giftCredits {
   font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
   font-size: 0.63rem;
@@ -372,6 +378,13 @@
   font-size: 0.63rem;
   color: var(--chrome-silver);
   flex-shrink: 0;
+}
+
+.itemSize {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--hull-grey);
+  margin-left: 0.25rem;
 }
 
 .itemAction {

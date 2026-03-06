@@ -48,6 +48,22 @@
 
 .creditsIcon { color: var(--warning-yellow); }
 
+.tradingRestricted {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--claw-red);
+  background: rgba(230, 57, 70, 0.12);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  border-radius: 3px;
+  padding: 0.1rem 0.3rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .noPlayer {
   font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
   font-size: 0.75rem;

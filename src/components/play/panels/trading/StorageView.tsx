@@ -148,6 +148,11 @@ export function StorageView() {
                         {gift.items.map((i) => `${i.name} x${i.quantity}`).join(', ')}
                       </span>
                     )}
+                    {gift.ships && gift.ships.length > 0 && (
+                      <span className={styles.giftShips}>
+                        {gift.ships.map((s) => s.class_name || s.class_id).join(', ')}
+                      </span>
+                    )}
                     {gift.credits != null && gift.credits > 0 && (
                       <span className={styles.giftCredits}>
                         {gift.credits.toLocaleString()} cr
@@ -240,6 +245,9 @@ export function StorageView() {
                   <div className={styles.itemInfo}>
                     <span className={styles.itemName}>{item.name}</span>
                     <span className={styles.itemQty}>x{item.quantity}</span>
+                    {item.size != null && item.size > 0 && (
+                      <span className={styles.itemSize}>{item.size}u</span>
+                    )}
                   </div>
                   <div className={styles.itemAction}>
                     <input
@@ -294,6 +302,9 @@ export function StorageView() {
                   <div className={styles.itemInfo}>
                     <span className={styles.itemName}>{item.name}</span>
                     <span className={styles.itemQty}>x{item.quantity}</span>
+                    {item.size != null && item.size > 0 && (
+                      <span className={styles.itemSize}>{item.size}u</span>
+                    )}
                   </div>
                   <div className={styles.itemAction}>
                     <input

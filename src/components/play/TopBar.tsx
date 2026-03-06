@@ -9,6 +9,7 @@ import {
   Rocket,
   Anchor,
   LogOut,
+  AlertTriangle,
 } from 'lucide-react'
 import { useGame } from './GameProvider'
 import styles from './TopBar.module.css'
@@ -61,6 +62,12 @@ export function TopBar() {
                 <Coins size={11} className={styles.creditsIcon} />
                 {player.credits.toLocaleString()}
               </span>
+              {player.trading_restricted_until && new Date(player.trading_restricted_until) > new Date() && (
+                <span className={styles.tradingRestricted}>
+                  <AlertTriangle size={10} />
+                  Trading locked
+                </span>
+              )}
             </>
           ) : (
             <span className={styles.noPlayer}>Not logged in</span>

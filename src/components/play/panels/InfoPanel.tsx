@@ -491,6 +491,24 @@ export function InfoPanel() {
                     Reward: {m.reward_credits.toLocaleString()} credits
                     {m.reward_items && m.reward_items.length > 0 && ' + items'}
                   </div>
+                  {m.objectives && m.objectives.length > 0 && (
+                    <div className={styles.objectiveList}>
+                      {m.objectives.map((obj, i) => (
+                        <div key={i} className={styles.objectiveItem}>
+                          <span className={styles.objectiveDesc}>{obj.description}</span>
+                          {obj.system_name && (
+                            <span className={styles.objectiveMeta}> [{obj.system_name}]</span>
+                          )}
+                          {obj.target_base_name && (
+                            <span className={styles.objectiveMeta}> @ {obj.target_base_name}</span>
+                          )}
+                          {obj.item_id && obj.quantity && (
+                            <span className={styles.objectiveMeta}> ({obj.item_id} x{obj.quantity})</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

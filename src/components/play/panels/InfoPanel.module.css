@@ -511,3 +511,28 @@
   text-align: center;
   padding: 1.5rem 0.5rem;
 }
+
+/* Mission objective enrichment */
+.objectiveList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid rgba(0, 212, 255, 0.2);
+}
+
+.objectiveItem {
+  font-size: 0.7rem;
+  color: var(--chrome-silver);
+}
+
+.objectiveDesc {
+  color: var(--star-white);
+}
+
+.objectiveMeta {
+  color: var(--plasma-cyan);
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+}

@@ -488,6 +488,14 @@
   color: var(--warning-yellow);
 }
 
+.modifyFeeNote {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--warning-yellow);
+  margin-left: 0.25rem;
+  white-space: nowrap;
+}
+
 .divider {
   height: 1px;
   background: var(--dim-grey);

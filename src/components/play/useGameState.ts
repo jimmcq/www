@@ -236,7 +236,17 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       } else {
         msg = 'Ship destroyed!'
       }
-      return addEvent({ ...state, inCombat: false, isDocked: false }, 'combat', msg)
+      const tradingRestricted = p.trading_restricted_until as string | undefined
+      if (tradingRestricted) {
+        msg += ' Trading restricted until ' + new Date(tradingRestricted).toLocaleTimeString() + '.'
+      }
+      if (p.wreck_suppressed) {
+        msg += ' No wreck left behind.'
+      }
+      const newPlayer = state.player && tradingRestricted
+        ? { ...state.player, trading_restricted_until: tradingRestricted }
+        : state.player
+      return addEvent({ ...state, inCombat: false, isDocked: false, player: newPlayer }, 'combat', msg)
     }
 
     case 'MINING_YIELD': {

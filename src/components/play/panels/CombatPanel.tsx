@@ -495,6 +495,9 @@ export function CombatPanel() {
             <div className={styles.confirmText}>
               This will destroy your ship and all cargo. You will respawn at your
               home base. This action cannot be undone.
+              <br /><br />
+              Repeated self-destructs within 24 hours incur escalating fees and
+              may temporarily restrict trading and gifting.
             </div>
             <div className={styles.confirmActions}>
               <button

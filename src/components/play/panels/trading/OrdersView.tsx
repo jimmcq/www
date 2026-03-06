@@ -297,6 +297,11 @@ export function OrdersView() {
                       >
                         <X size={11} />
                       </button>
+                      {order.order_type === 'sell' && parseInt(editPrice, 10) > order.price_each && (
+                        <span className={styles.modifyFeeNote}>
+                          1% fee on price increase
+                        </span>
+                      )}
                     </span>
                   ) : (
                     <span className={styles.orderDetail}>
