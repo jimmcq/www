@@ -50,7 +50,7 @@ export function PatreonWidget() {
       .catch(() => {})
   }, [])
 
-  const pledgeUrl = data?.pledge_url ?? PATREON_URL
+  const pledgeUrl = PATREON_URL
   const tiers = data?.tiers ?? []
   const members = data?.members ?? []
 
