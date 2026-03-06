@@ -128,6 +128,10 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
           else if ('skills' in p && typeof p.skills === 'object' && 'message' in p) {
             d({ type: 'SET_SKILLS_DATA', payload: p as unknown as SkillsData })
           }
+          // get_base_wrecks: has wrecks array
+          else if (Array.isArray(p.wrecks)) {
+            window.dispatchEvent(new CustomEvent('spacemolt:wrecks', { detail: p.wrecks }))
+          }
         }
         break
       }

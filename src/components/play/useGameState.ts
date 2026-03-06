@@ -191,6 +191,21 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       if (actionName === 'sell') {
         return addEvent(state, 'trade', p.message as string || 'Sale complete')
       }
+      if (actionName === 'loot_wreck') {
+        return addEvent(state, 'info', p.message as string || 'Item looted from wreck')
+      }
+      if (actionName === 'salvage_wreck') {
+        return addEvent(state, 'info', p.message as string || 'Wreck salvaged')
+      }
+      if (actionName === 'send_gift' || actionName === 'gift_ship') {
+        return addEvent({ ...state, storageData: null }, 'trade', p.message as string || 'Gift sent')
+      }
+      if (actionName === 'self_destruct') {
+        const fee = p.self_destruct_fee as number | undefined
+        let msg = p.message as string || 'Ship self-destructed'
+        if (fee && fee > 0) msg += ` (fee: ${fee.toLocaleString()} cr)`
+        return addEvent(state, 'combat', msg)
+      }
       if (p.message) {
         return addEvent(state, 'info', p.message as string)
       }
@@ -236,17 +251,26 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       } else {
         msg = 'Ship destroyed!'
       }
+      const fee = p.self_destruct_fee as number | undefined
+      if (fee && fee > 0) msg += ` | Self-destruct fee: ${fee.toLocaleString()} cr`
       const tradingRestricted = p.trading_restricted_until as string | undefined
       if (tradingRestricted) {
-        msg += ' Trading restricted until ' + new Date(tradingRestricted).toLocaleTimeString() + '.'
+        msg += ' | Trading restricted'
       }
       if (p.wreck_suppressed) {
-        msg += ' No wreck left behind.'
+        msg += ' | No wreck left'
       }
       const newPlayer = state.player && tradingRestricted
         ? { ...state.player, trading_restricted_until: tradingRestricted }
         : state.player
-      return addEvent({ ...state, inCombat: false, isDocked: false, player: newPlayer }, 'combat', msg)
+      return addEvent({
+        ...state,
+        inCombat: false,
+        isDocked: false,
+        fleetData: null,
+        storageData: null,
+        player: newPlayer,
+      }, 'combat', msg)
     }
 
     case 'MINING_YIELD': {

@@ -12,6 +12,7 @@ import {
   Gift,
   ChevronDown,
   ChevronRight,
+  Send,
 } from 'lucide-react'
 import { useGame } from '../../GameProvider'
 import type { StorageItem, StorageShip, StorageGift } from '../../types'
@@ -35,6 +36,14 @@ export function StorageView() {
 
   // Expandable sections
   const [showGifts, setShowGifts] = useState(true)
+  const [showSendGift, setShowSendGift] = useState(false)
+  const [giftRecipient, setGiftRecipient] = useState('')
+  const [giftMessage, setGiftMessage] = useState('')
+  const [giftCredits, setGiftCredits] = useState('')
+  const [giftItemId, setGiftItemId] = useState('')
+  const [giftItemQty, setGiftItemQty] = useState('')
+  const [giftShipId, setGiftShipId] = useState('')
+  const [sendingGift, setSendingGift] = useState(false)
 
   // Auto-fetch storage data when docked and data is null
   useEffect(() => {
@@ -84,6 +93,37 @@ export function StorageView() {
     },
     [sendCommand, depositQtys]
   )
+
+  const handleSendGift = useCallback(async () => {
+    if (!giftRecipient.trim()) return
+    setSendingGift(true)
+    try {
+      const params: Record<string, unknown> = { recipient: giftRecipient.trim() }
+      if (giftMessage.trim()) params.message = giftMessage.trim()
+      const credits = parseInt(giftCredits, 10)
+      if (!isNaN(credits) && credits > 0) params.credits = credits
+      if (giftItemId && giftItemQty) {
+        const qty = parseInt(giftItemQty, 10)
+        if (!isNaN(qty) && qty > 0) {
+          params.items = { [giftItemId]: qty }
+        }
+      }
+      if (giftShipId) params.ship_id = giftShipId
+      await sendCommand('send_gift', params)
+      // Reset form
+      setGiftRecipient('')
+      setGiftMessage('')
+      setGiftCredits('')
+      setGiftItemId('')
+      setGiftItemQty('')
+      setGiftShipId('')
+      setShowSendGift(false)
+      // Refresh storage
+      sendCommand('view_storage')
+    } finally {
+      setSendingGift(false)
+    }
+  }, [sendCommand, giftRecipient, giftMessage, giftCredits, giftItemId, giftItemQty, giftShipId])
 
   if (!isDocked) {
     return (
@@ -165,6 +205,98 @@ export function StorageView() {
           )}
         </div>
       )}
+
+      {/* Send Gift */}
+      <div className={styles.section}>
+        <button
+          className={styles.giftToggle}
+          onClick={() => setShowSendGift(!showSendGift)}
+          type="button"
+        >
+          <Send size={12} />
+          Send Gift
+          {showSendGift ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+        </button>
+        {showSendGift && (
+          <div className={styles.giftSendForm}>
+            <input
+              className={styles.creditInput}
+              type="text"
+              placeholder="Recipient username"
+              value={giftRecipient}
+              onChange={(e) => setGiftRecipient(e.target.value)}
+            />
+            <input
+              className={styles.creditInput}
+              type="text"
+              placeholder="Message (optional)"
+              value={giftMessage}
+              onChange={(e) => setGiftMessage(e.target.value)}
+            />
+            <div className={styles.giftSendRow}>
+              <input
+                className={styles.creditInput}
+                type="number"
+                min={0}
+                placeholder="Credits"
+                value={giftCredits}
+                onChange={(e) => setGiftCredits(e.target.value)}
+              />
+            </div>
+            {storedItems.length > 0 && (
+              <div className={styles.giftSendRow}>
+                <select
+                  className={styles.creditInput}
+                  value={giftItemId}
+                  onChange={(e) => setGiftItemId(e.target.value)}
+                >
+                  <option value="">-- Select item --</option>
+                  {storedItems.map((item) => (
+                    <option key={item.item_id} value={item.item_id}>
+                      {item.name} (x{item.quantity})
+                    </option>
+                  ))}
+                </select>
+                {giftItemId && (
+                  <input
+                    className={styles.qtyInput}
+                    type="number"
+                    min={1}
+                    placeholder="Qty"
+                    value={giftItemQty}
+                    onChange={(e) => setGiftItemQty(e.target.value)}
+                  />
+                )}
+              </div>
+            )}
+            {storedShips.length > 0 && (
+              <div className={styles.giftSendRow}>
+                <select
+                  className={styles.creditInput}
+                  value={giftShipId}
+                  onChange={(e) => setGiftShipId(e.target.value)}
+                >
+                  <option value="">-- Gift a ship --</option>
+                  {storedShips.map((ship) => (
+                    <option key={ship.ship_id} value={ship.ship_id}>
+                      {ship.class_name || ship.class_id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <button
+              className={styles.depositBtn}
+              onClick={handleSendGift}
+              disabled={sendingGift || !giftRecipient.trim() || (!giftCredits && !giftItemId && !giftShipId)}
+              type="button"
+            >
+              <Send size={10} />
+              {sendingGift ? 'Sending...' : 'Send Gift'}
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Credits section */}
       <div className={styles.section}>

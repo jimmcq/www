@@ -7,6 +7,7 @@ import {
   Fuel,
   Wrench,
   X,
+  ArrowDownToLine,
 } from 'lucide-react'
 import { useGame } from '../../GameProvider'
 import styles from '../ShipPanel.module.css'
@@ -17,8 +18,16 @@ export function ShipModules() {
   const isDocked = state.isDocked
 
   const handleUninstallModule = useCallback(
-    (instanceId: string) => {
-      sendCommand('uninstall_module', { instance_id: instanceId })
+    (moduleId: string) => {
+      sendCommand('uninstall_mod', { module_id: moduleId })
+    },
+    [sendCommand]
+  )
+
+  const handleDepositModule = useCallback(
+    async (moduleId: string, moduleTypeId: string) => {
+      await sendCommand('uninstall_mod', { module_id: moduleId })
+      sendCommand('deposit_items', { item_id: moduleTypeId, quantity: 1 })
     },
     [sendCommand]
   )
@@ -103,16 +112,26 @@ export function ShipModules() {
                   </div>
                   <div className={styles.moduleActions}>
                     {mod.instance_id && isDocked && (
-                      <button
-                        className={styles.uninstallBtn}
-                        onClick={() =>
-                          handleUninstallModule(mod.instance_id!)
-                        }
-                        title="Uninstall module"
-                        type="button"
-                      >
-                        <X size={14} />
-                      </button>
+                      <>
+                        <button
+                          className={styles.storeBtn}
+                          onClick={() => handleDepositModule(mod.instance_id!, mod.module_id)}
+                          title="Uninstall and store at station"
+                          type="button"
+                        >
+                          <ArrowDownToLine size={12} />
+                        </button>
+                        <button
+                          className={styles.uninstallBtn}
+                          onClick={() =>
+                            handleUninstallModule(mod.instance_id!)
+                          }
+                          title="Uninstall to cargo"
+                          type="button"
+                        >
+                          <X size={14} />
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>

@@ -449,3 +449,22 @@
   font-size: 0.58rem;
   color: var(--hull-grey);
 }
+
+/* Send Gift */
+.giftSendForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.45rem;
+}
+
+.giftSendRow {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.giftSendRow select {
+  flex: 1;
+  min-width: 0;
+}

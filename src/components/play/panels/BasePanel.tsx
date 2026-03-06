@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Building2, Shield, Wrench, Heart, Hammer, RefreshCw, Anchor } from 'lucide-react'
+import { Building2, Shield, Wrench, Heart, Hammer, RefreshCw, Anchor, ArrowUpFromLine, Coins } from 'lucide-react'
 import { useGame } from '../GameProvider'
 import { ActionButton } from '../ActionButton'
 import { ProgressBar } from '../ProgressBar'
@@ -25,6 +25,9 @@ export function BasePanel() {
   const [wrecks, setWrecks] = useState<Wreck[]>([])
   const [wrecksLoaded, setWrecksLoaded] = useState(false)
   const [loadingWrecks, setLoadingWrecks] = useState(false)
+  const [expandedWreck, setExpandedWreck] = useState<string | null>(null)
+  const [lootingItem, setLootingItem] = useState<string | null>(null)
+  const [salvaging, setSalvaging] = useState(false)
 
   // Build base form
   const [buildName, setBuildName] = useState('')
@@ -78,12 +81,46 @@ export function BasePanel() {
 
   const handleLoadWrecks = useCallback(() => {
     setLoadingWrecks(true)
-    sendCommand('get_base_wrecks')
-    setTimeout(() => {
+    const handler = (e: Event) => {
+      setWrecks((e as CustomEvent).detail)
       setLoadingWrecks(false)
       setWrecksLoaded(true)
-    }, 3000)
+    }
+    window.addEventListener('spacemolt:wrecks', handler, { once: true })
+    sendCommand('get_base_wrecks')
+    setTimeout(() => {
+      window.removeEventListener('spacemolt:wrecks', handler)
+      setLoadingWrecks(false)
+      setWrecksLoaded(true)
+    }, 5000)
   }, [sendCommand])
+
+  const handleLootItem = useCallback(
+    async (wreckId: string, itemId: string) => {
+      setLootingItem(itemId)
+      try {
+        await sendCommand('loot_wreck', { wreck_id: wreckId, item_id: itemId })
+        sendCommand('get_base_wrecks')
+      } finally {
+        setLootingItem(null)
+      }
+    },
+    [sendCommand]
+  )
+
+  const handleSalvageWreck = useCallback(
+    async (wreckId: string) => {
+      setSalvaging(true)
+      try {
+        await sendCommand('salvage_wreck', { wreck_id: wreckId })
+        setExpandedWreck(null)
+        sendCommand('get_base_wrecks')
+      } finally {
+        setSalvaging(false)
+      }
+    },
+    [sendCommand]
+  )
 
   const handleAttackBase = useCallback(() => {
     sendCommand('attack_base')
@@ -348,17 +385,63 @@ export function BasePanel() {
             <div className={styles.wreckList}>
               {wrecks.map((w) => (
                 <div key={w.wreck_id} className={styles.wreckItem}>
-                  <div className={styles.wreckInfo}>
-                    <span className={styles.wreckName}>
-                      {w.player_name ?? 'Unknown'} - {w.ship_class ?? 'Wreck'}
+                  <button
+                    className={styles.wreckHeader}
+                    onClick={() => setExpandedWreck(expandedWreck === w.wreck_id ? null : w.wreck_id)}
+                    type="button"
+                  >
+                    <div className={styles.wreckInfo}>
+                      <span className={styles.wreckName}>
+                        {w.player_name ?? 'Unknown'} - {w.ship_class ?? 'Wreck'}
+                      </span>
+                      <span className={styles.wreckMeta}>
+                        {w.items.length} items{w.credits ? ` + ${w.credits.toLocaleString()} cr` : ''}
+                      </span>
+                    </div>
+                    <span className={styles.wreckTimer}>
+                      {w.ticks_remaining} ticks
                     </span>
-                    <span className={styles.wreckMeta}>
-                      {w.items.length} items{w.credits ? ` + ${w.credits} credits` : ''}
-                    </span>
-                  </div>
-                  <span className={styles.wreckTimer}>
-                    {w.ticks_remaining} ticks
-                  </span>
+                  </button>
+                  {expandedWreck === w.wreck_id && (
+                    <div className={styles.wreckContents}>
+                      {w.items.length > 0 ? (
+                        <div className={styles.wreckItemList}>
+                          {w.items.map((item) => (
+                            <div key={item.item_id} className={styles.wreckLootRow}>
+                              <span className={styles.wreckLootName}>
+                                {item.name} x{item.quantity}
+                              </span>
+                              <button
+                                className={styles.lootBtn}
+                                onClick={() => handleLootItem(w.wreck_id, item.item_id)}
+                                disabled={lootingItem === item.item_id}
+                                type="button"
+                              >
+                                <ArrowUpFromLine size={10} />
+                                {lootingItem === item.item_id ? 'Taking...' : 'Take'}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className={styles.emptyState}>No items remaining</div>
+                      )}
+                      {w.credits != null && w.credits > 0 && (
+                        <div className={styles.wreckCredits}>
+                          <Coins size={10} /> {w.credits.toLocaleString()} credits
+                        </div>
+                      )}
+                      <button
+                        className={styles.salvageBtn}
+                        onClick={() => handleSalvageWreck(w.wreck_id)}
+                        disabled={salvaging}
+                        type="button"
+                      >
+                        <Hammer size={12} />
+                        {salvaging ? 'Salvaging...' : 'Salvage Wreck'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

@@ -334,8 +334,7 @@
 
 .wreckItem {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 0.4rem 0.55rem;
   background: rgba(230, 57, 70, 0.06);
   border: 1px solid rgba(230, 57, 70, 0.12);
@@ -365,6 +364,120 @@
   font-size: 0.65rem;
   color: var(--claw-red);
   flex-shrink: 0;
+}
+
+.wreckHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
+
+.wreckHeader:hover .wreckName {
+  color: var(--plasma-cyan);
+}
+
+.wreckContents {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.35rem;
+  margin-top: 0.3rem;
+  border-top: 1px solid rgba(230, 57, 70, 0.1);
+}
+
+.wreckItemList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.wreckLootRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.2rem 0.3rem;
+  background: rgba(10, 14, 23, 0.3);
+  border-radius: 3px;
+}
+
+.wreckLootName {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  color: var(--chrome-silver);
+}
+
+.lootBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid var(--plasma-cyan);
+  border-radius: 3px;
+  color: var(--plasma-cyan);
+  cursor: pointer;
+  padding: 0.15rem 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.lootBtn:hover:not(:disabled) {
+  background: rgba(0, 212, 255, 0.18);
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.2);
+}
+
+.lootBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.wreckCredits {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--warning-yellow);
+  padding: 0.15rem 0.3rem;
+}
+
+.salvageBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(230, 126, 34, 0.08);
+  border: 1px solid var(--warning-yellow);
+  border-radius: 4px;
+  color: var(--warning-yellow);
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.salvageBtn:hover:not(:disabled) {
+  background: rgba(230, 126, 34, 0.2);
+  box-shadow: 0 0 8px rgba(230, 126, 34, 0.2);
+}
+
+.salvageBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 /* Not docked state */

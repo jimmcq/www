@@ -496,8 +496,17 @@ export function CombatPanel() {
               This will destroy your ship and all cargo. You will respawn at your
               home base. This action cannot be undone.
               <br /><br />
-              Repeated self-destructs within 24 hours incur escalating fees and
-              may temporarily restrict trading and gifting.
+              <strong>Fee schedule:</strong> First 2 self-destructs per 24h are free.
+              3rd costs 200 cr, then doubles (400, 800, 1600...).
+              Repeated use restricts trading and gifting.
+              {state.player?.trading_restricted_until && new Date(state.player.trading_restricted_until) > new Date() && (
+                <>
+                  <br /><br />
+                  <span style={{ color: 'var(--claw-red)' }}>
+                    You are currently trade-restricted until {new Date(state.player.trading_restricted_until).toLocaleTimeString()}.
+                  </span>
+                </>
+              )}
             </div>
             <div className={styles.confirmActions}>
               <button

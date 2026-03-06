@@ -30,6 +30,15 @@ function StatusBar({ value, max, color, label }: { value: number; max: number; c
   )
 }
 
+function formatCountdown(isoDate: string): string {
+  const remaining = new Date(isoDate).getTime() - Date.now()
+  if (remaining <= 0) return 'expired'
+  const hours = Math.floor(remaining / 3600000)
+  const minutes = Math.floor((remaining % 3600000) / 60000)
+  if (hours > 0) return `${hours}h ${minutes}m`
+  return `${minutes}m`
+}
+
 export function TopBar() {
   const { state, sendCommand, dispatch, onSwitchPlayer } = useGame()
   const player = state.player
@@ -63,9 +72,9 @@ export function TopBar() {
                 {player.credits.toLocaleString()}
               </span>
               {player.trading_restricted_until && new Date(player.trading_restricted_until) > new Date() && (
-                <span className={styles.tradingRestricted}>
+                <span className={styles.tradingRestricted} title={`Until ${new Date(player.trading_restricted_until).toLocaleTimeString()}`}>
                   <AlertTriangle size={10} />
-                  Trading locked
+                  Trading locked ({formatCountdown(player.trading_restricted_until)})
                 </span>
               )}
             </>
