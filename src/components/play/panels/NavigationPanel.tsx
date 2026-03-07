@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import {
   Compass,
   MapPin,
@@ -36,56 +36,6 @@ export function NavigationPanel() {
   const [routeQuery, setRouteQuery] = useState('')
   const [routeLoading, setRouteLoading] = useState(false)
   const [routeResult, setRouteResult] = useState<RouteResult | null>(null)
-  const prevEventLogLenRef = useRef(state.eventLog.length)
-
-  // Watch eventLog for route-related messages when loading
-  useEffect(() => {
-    if (!routeLoading) {
-      prevEventLogLenRef.current = state.eventLog.length
-      return
-    }
-    // Check if new events have been added since we started loading
-    if (state.eventLog.length > prevEventLogLenRef.current) {
-      for (let i = 0; i < state.eventLog.length - prevEventLogLenRef.current; i++) {
-        const event = state.eventLog[i]
-        if (event.type === 'info' && event.message.includes('Route found')) {
-          const jumpMatch = event.message.match(/(\d+)\s+jump/)
-          setRouteResult({
-            found: true,
-            route: [],
-            total_jumps: jumpMatch ? parseInt(jumpMatch[1], 10) : 0,
-            message: event.message,
-          })
-          setRouteLoading(false)
-          break
-        }
-        if (event.type === 'info' && (event.message.includes('No route') || event.message.includes('no route'))) {
-          setRouteResult({
-            found: false,
-            route: [],
-            total_jumps: 0,
-            message: event.message,
-          })
-          setRouteLoading(false)
-          break
-        }
-        if (event.type === 'error') {
-          setRouteLoading(false)
-          break
-        }
-      }
-      prevEventLogLenRef.current = state.eventLog.length
-    }
-  }, [state.eventLog, routeLoading])
-
-  // Auto-clear loading after timeout
-  useEffect(() => {
-    if (!routeLoading) return
-    const timer = setTimeout(() => {
-      setRouteLoading(false)
-    }, 10000)
-    return () => clearTimeout(timer)
-  }, [routeLoading])
 
   const handleTravel = useCallback(
     (poiId: string) => {
@@ -132,10 +82,31 @@ export function NavigationPanel() {
     if (routeQuery.trim()) {
       setRouteResult(null)
       setRouteLoading(true)
-      prevEventLogLenRef.current = state.eventLog.length
-      sendCommand('find_route', { target_system: routeQuery.trim() })
+      sendCommand('find_route', { target_system: routeQuery.trim() }).then((result) => {
+        const msg = (result.message as string) || ''
+        if (result.error) {
+          setRouteResult({ found: false, route: [], total_jumps: 0, message: msg || 'Route finding failed' })
+        } else if (Array.isArray(result.route)) {
+          setRouteResult({
+            found: true,
+            route: result.route as RouteStep[],
+            total_jumps: (result.total_jumps as number) || 0,
+            message: msg || 'Route found',
+          })
+        } else {
+          const jumpMatch = msg.match(/(\d+)\s+jump/)
+          const found = !msg.toLowerCase().includes('no route')
+          setRouteResult({
+            found,
+            route: [],
+            total_jumps: jumpMatch ? parseInt(jumpMatch[1], 10) : 0,
+            message: msg,
+          })
+        }
+        setRouteLoading(false)
+      })
     }
-  }, [sendCommand, routeQuery, state.eventLog.length])
+  }, [sendCommand, routeQuery])
 
   const handleRouteKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

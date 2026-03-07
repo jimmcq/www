@@ -40,6 +40,7 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
   dispatchRef.current = dispatch
   const sendRef = useRef<(msg: WSMessage) => void>(() => {})
   const pendingCallbacksRef = useRef<Map<string, (payload: Record<string, unknown>) => void>>(new Map())
+  const reqIdRef = useRef(0)
 
   const onMessage = useCallback((msg: WSMessage) => {
     const d = dispatchRef.current
@@ -70,12 +71,14 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
         d({ type: 'OK', payload: result })
 
         const arAction = result.action as string | undefined
-        // Resolve pending sendCommand promise using the command field
+        // Resolve pending sendCommand promise using _req_id or command field
+        const arReqId = (result._req_id || p._req_id) as string | undefined
         const arCommand = p.command as string | undefined
-        if (arCommand) {
-          const cb = pendingCallbacksRef.current.get(arCommand)
+        const arKey = arReqId || arCommand
+        if (arKey) {
+          const cb = pendingCallbacksRef.current.get(arKey)
           if (cb) {
-            pendingCallbacksRef.current.delete(arCommand)
+            pendingCallbacksRef.current.delete(arKey)
             cb(result)
           }
         }
@@ -102,11 +105,13 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
         d({ type: 'ERROR', payload: { code: (p.code as string) || 'action_error', message: (p.message as string) || 'Action failed' } })
 
         // Resolve pending sendCommand promise
+        const aeReqId = p._req_id as string | undefined
         const aeCommand = p.command as string | undefined
-        if (aeCommand) {
-          const cb = pendingCallbacksRef.current.get(aeCommand)
+        const aeKey = aeReqId || aeCommand
+        if (aeKey) {
+          const cb = pendingCallbacksRef.current.get(aeKey)
           if (cb) {
-            pendingCallbacksRef.current.delete(aeCommand)
+            pendingCallbacksRef.current.delete(aeKey)
             cb({ error: true, code: p.code, message: p.message } as Record<string, unknown>)
           }
         }
@@ -114,12 +119,15 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
       }
       case 'ok': {
         d({ type: 'OK', payload: p })
+        window.dispatchEvent(new CustomEvent('spacemolt:ok', { detail: p }))
         const action = (p as Record<string, unknown>).action as string | undefined
         // Resolve pending sendCommand promise if any
-        if (action) {
-          const cb = pendingCallbacksRef.current.get(action)
+        const okReqId = (p as Record<string, unknown>)._req_id as string | undefined
+        const okKey = okReqId || action
+        if (okKey) {
+          const cb = pendingCallbacksRef.current.get(okKey)
           if (cb) {
-            pendingCallbacksRef.current.delete(action)
+            pendingCallbacksRef.current.delete(okKey)
             cb(p as Record<string, unknown>)
           }
         }
@@ -246,7 +254,7 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
       case 'drone_update':
       case 'drone_destroyed':
         d({ type: 'ADD_EVENT', entry: {
-          id: Date.now().toString(36),
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
           type: 'drone',
           message: (p.message as string) || `Drone ${msg.type === 'drone_destroyed' ? 'destroyed' : 'update'}`,
           timestamp: Date.now(),
@@ -255,7 +263,7 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
       case 'base_raid_update':
       case 'base_destroyed':
         d({ type: 'ADD_EVENT', entry: {
-          id: Date.now().toString(36),
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
           type: 'base',
           message: (p.message as string) || `Base ${msg.type === 'base_destroyed' ? 'destroyed' : 'under attack'}`,
           timestamp: Date.now(),
@@ -263,7 +271,7 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
         break
       case 'reconnected':
         d({ type: 'ADD_EVENT', entry: {
-          id: Date.now().toString(36),
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
           type: 'system',
           message: (p.message as string) || 'Reconnected to ship',
           timestamp: Date.now(),
@@ -271,7 +279,7 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
         break
       case 'queue_cleared':
         d({ type: 'ADD_EVENT', entry: {
-          id: Date.now().toString(36),
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
           type: 'system',
           message: 'Action queue cleared',
           timestamp: Date.now(),
@@ -284,8 +292,16 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
     dispatchRef.current({ type: 'SET_CONNECTED', connected: true })
   }, [])
 
-  const onDisconnect = useCallback(() => {
+  const onDisconnect = useCallback((reason?: 'session_replaced' | 'error') => {
     dispatchRef.current({ type: 'SET_CONNECTED', connected: false })
+    if (reason === 'session_replaced') {
+      dispatchRef.current({ type: 'ADD_EVENT', entry: {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        type: 'system',
+        message: 'Session replaced by another tab or device',
+        timestamp: Date.now(),
+      }})
+    }
   }, [])
 
   const { connect, disconnect, send, readyState, sessionReplaced } = useWebSocket({
@@ -325,9 +341,11 @@ export function GameProvider({ children, onSwitchPlayer }: GameProviderProps) {
 
   const sendCommand = useCallback((type: string, payload?: Record<string, unknown>): Promise<Record<string, unknown>> => {
     return new Promise((resolve) => {
-      pendingCallbacksRef.current.set(type, resolve)
+      const reqId = `${type}:${++reqIdRef.current}`
+      pendingCallbacksRef.current.set(reqId, resolve)
       const msg: WSMessage = { type }
-      if (payload) msg.payload = payload
+      if (payload) msg.payload = { ...payload, _req_id: reqId }
+      else msg.payload = { _req_id: reqId }
       send(msg)
     })
   }, [send])
