@@ -501,3 +501,23 @@
   background: var(--dim-grey);
   margin: 0.25rem 0;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .newOrderBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .typeBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .formInput { font-size: 16px; min-height: 44px; }
+  .modifyInput { font-size: 16px; min-height: 44px; }
+  .cancelFormBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .submitSellBtn { min-height: 44px; padding: 0.4rem 0.6rem; }
+  .submitBuyBtn { min-height: 44px; padding: 0.4rem 0.6rem; }
+  .cancelBtn { min-height: 44px; min-width: 44px; padding: 0.4rem; }
+  .modifyBtn { min-height: 44px; min-width: 44px; padding: 0.4rem; }
+  .modifySaveBtn { min-height: 44px; min-width: 44px; padding: 0.4rem; }
+  .modifyCancelBtn { min-height: 44px; min-width: 44px; padding: 0.4rem; }
+  .orderTypeBadge { font-size: 0.68rem; }
+  .orderMeta { font-size: 0.68rem; }
+  .createdBy { font-size: 0.68rem; }
+  .modifyFeeWarning { font-size: 0.68rem; }
+}

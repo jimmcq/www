@@ -223,3 +223,13 @@
   background: rgba(0, 212, 255, 0.18);
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .moduleRow { min-height: 44px; padding: 0.5rem; }
+  .buyBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .installBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .moduleType { font-size: 0.68rem; }
+  .metaItem { font-size: 0.68rem; }
+}

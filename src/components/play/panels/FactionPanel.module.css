@@ -632,3 +632,26 @@
   border-color: var(--plasma-cyan);
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.15);
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .input { font-size: 16px; min-height: 44px; }
+  .inviteInput { font-size: 16px; min-height: 44px; }
+  .textarea { font-size: 16px; min-height: 44px; }
+  .select { font-size: 16px; min-height: 44px; }
+  .metaTag { font-size: 0.68rem; }
+  .memberRole { font-size: 0.68rem; }
+  .factionListTag { font-size: 0.68rem; }
+  .factionListMembers { font-size: 0.68rem; }
+  .intelMeta { font-size: 0.68rem; }
+  .intelStatLabel { font-size: 0.68rem; }
+  .roomItemMeta { font-size: 0.68rem; }
+  .roomContentMeta { font-size: 0.68rem; }
+  .roomContentFooter { font-size: 0.68rem; }
+  .roomFormCount { font-size: 0.68rem; }
+}

@@ -468,3 +468,18 @@
   flex: 1;
   min-width: 0;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .depositBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .withdrawBtn { min-height: 44px; padding: 0.4rem 0.5rem; }
+  .creditInput { font-size: 16px; min-height: 44px; }
+  .qtyInput { font-size: 16px; min-height: 44px; }
+  .giftToggle { min-height: 44px; padding: 0.5rem 0.55rem; }
+  .giftBadge { font-size: 0.68rem; }
+  .giftTime { font-size: 0.68rem; }
+  .creditLabel { font-size: 0.68rem; }
+  .shipStat { font-size: 0.68rem; }
+  .itemSize { font-size: 0.68rem; }
+}

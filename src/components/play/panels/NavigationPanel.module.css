@@ -462,3 +462,28 @@
   flex-direction: column;
   gap: 0.35rem;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .metaTag { font-size: 0.72rem; }
+  .poiItem { padding: 0.55rem 0.6rem; min-height: 44px; }
+  .poiName { font-size: 0.85rem; }
+  .poiType { font-size: 0.68rem; }
+  .poiOnline { font-size: 0.68rem; }
+  .travelIcon { opacity: 1; } /* always visible on touch */
+  .connectionItem { padding: 0.55rem 0.6rem; min-height: 44px; }
+  .connectionName { font-size: 0.85rem; }
+  .connectionDist { font-size: 0.68rem; }
+  .searchInput { font-size: 16px; padding: 0.5rem; min-height: 44px; }
+  .searchBtn { font-size: 0.75rem; padding: 0.5rem 0.75rem; min-height: 44px; }
+  .routeStepName { font-size: 0.82rem; }
+  .routeStepJump { opacity: 1; } /* always visible on touch */
+  .routeStep { padding: 0.45rem 0.5rem; min-height: 44px; }
+  .travelLabel { font-size: 0.72rem; }
+  .dockedBadge { font-size: 0.68rem; }
+}

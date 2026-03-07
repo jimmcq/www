@@ -678,3 +678,27 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .combatBadge { font-size: 0.68rem; }
+  .iconBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .cloakBtn { font-size: 0.75rem; padding: 0.5rem 0.75rem; min-height: 44px; }
+  .selfDestructBtn { font-size: 0.75rem; padding: 0.5rem 0.75rem; min-height: 44px; }
+  .playerCard { padding: 0.55rem 0.65rem; min-height: 44px; }
+  .playerName { font-size: 0.85rem; }
+  .playerShip { font-size: 0.68rem; }
+  .stanceBtn { font-size: 0.68rem; padding: 0.45rem 0.5rem; min-height: 44px; }
+  .tacticalBtn { font-size: 0.68rem; padding: 0.45rem 0.5rem; min-height: 44px; }
+  .engageBtn { font-size: 0.68rem; padding: 0.45rem 0.5rem; min-height: 44px; }
+  .ammoSelect { font-size: 16px; padding: 0.4rem; min-height: 44px; }
+  .reloadBtn { font-size: 0.68rem; padding: 0.4rem 0.6rem; min-height: 44px; }
+  .confirmDialog { padding: 1.25rem; max-width: 90vw; }
+  .confirmText { font-size: 0.85rem; }
+  .confirmActions { flex-direction: column; gap: 0.35rem; }
+}

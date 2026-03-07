@@ -111,15 +111,27 @@
   .container {
     border-left: none;
     border-top: 1px solid rgba(61, 90, 108, 0.4);
-    max-height: 40px; /* collapsed: just tab bar */
+    max-height: 44px; /* collapsed: tab bar at touch-friendly height */
     transition: max-height 0.3s ease;
   }
 
   .containerExpanded {
-    max-height: 50vh;
+    max-height: 65vh;
   }
 
   .mobileToggle {
     display: flex;
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .tab {
+    padding: 0.55rem 0.5rem;
+    font-size: 0.7rem;
+    min-height: 44px;
+  }
+
+  .countBadge {
+    font-size: 0.6rem;
   }
 }

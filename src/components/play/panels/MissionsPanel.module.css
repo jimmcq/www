@@ -444,3 +444,23 @@
   color: var(--plasma-cyan);
   background: rgba(0, 212, 255, 0.06);
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .tab { min-height: 44px; padding: 0.55rem 0.5rem; }
+  .acceptBtn { min-height: 44px; padding: 0.4rem 0.6rem; }
+  .abandonBtn { min-height: 44px; padding: 0.4rem 0.6rem; }
+  .linkBtn { min-height: 44px; padding: 0.4rem 0.65rem; }
+  .missionDifficulty { font-size: 0.68rem; }
+  .missionReward { font-size: 0.68rem; }
+  .missionDetailLabel { font-size: 0.68rem; }
+  .missionStatusBadge { font-size: 0.68rem; }
+  .rewardCredits { font-size: 0.68rem; }
+  .rewardItems { font-size: 0.68rem; }
+  .completionTime { font-size: 0.68rem; }
+  .objectiveProgress { font-size: 0.68rem; }
+}

@@ -478,3 +478,20 @@
   composes: materialProgressValue;
   color: var(--bio-green);
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .textInput { font-size: 16px; min-height: 44px; }
+  .inputLabel { font-size: 0.68rem; }
+  .quoteStatLabel { font-size: 0.68rem; }
+  .materialsLabel { font-size: 0.68rem; }
+  .materialProgressName { font-size: 0.68rem; }
+  .materialProgressValue { font-size: 0.68rem; }
+  .commissionStatLabel { font-size: 0.68rem; }
+  .statusBadge { font-size: 0.68rem; }
+}

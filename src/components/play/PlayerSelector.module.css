@@ -213,3 +213,15 @@
   color: var(--chrome-silver);
   flex-shrink: 0;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container { padding: 1rem 0.5rem 0.5rem; }
+  .playerList { grid-template-columns: 1fr; gap: 0.35rem; }
+  .playerCard { padding: 0.65rem 0.75rem; min-height: 44px; }
+  .playerName { font-size: 0.82rem; }
+  .playerMeta { font-size: 0.68rem; }
+  .searchInput { font-size: 16px; padding: 0.55rem 0.65rem; min-height: 44px; }
+  .playerCount { font-size: 0.72rem; }
+  .dashboardLink { min-height: 44px; font-size: 0.8rem; }
+}

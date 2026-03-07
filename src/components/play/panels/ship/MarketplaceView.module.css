@@ -431,3 +431,19 @@
   font-weight: 600;
   margin-left: auto;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .textInput { font-size: 16px; min-height: 44px; }
+  .selectInput { font-size: 16px; min-height: 44px; }
+  .listingStatLabel { font-size: 0.68rem; }
+  .listingSeller { font-size: 0.68rem; }
+  .tierBadge { font-size: 0.68rem; }
+  .categoryBadge { font-size: 0.68rem; }
+  .inputLabel { font-size: 0.68rem; }
+}

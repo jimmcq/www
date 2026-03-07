@@ -364,3 +364,16 @@
   color: var(--plasma-cyan);
   font-weight: 600;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .buyBtn { min-height: 44px; padding: 0.4rem 0.6rem; }
+  .shipStatLabel { font-size: 0.68rem; }
+  .requirementLabel { font-size: 0.68rem; }
+  .slotBadge { font-size: 0.68rem; }
+  .tierBadge { font-size: 0.68rem; }
+}

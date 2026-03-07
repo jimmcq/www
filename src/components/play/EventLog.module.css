@@ -151,3 +151,13 @@
     transform: translateX(0);
   }
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .headerTitle { font-size: 0.7rem; }
+  .eventCount { font-size: 0.68rem; }
+  .eventMessage { font-size: 0.78rem; }
+  .eventTime { font-size: 0.65rem; }
+  .emptyMessage { font-size: 0.78rem; }
+  .event { min-height: 32px; padding: 0.3rem 0.4rem; }
+}

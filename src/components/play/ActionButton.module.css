@@ -127,3 +127,18 @@
     transform: rotate(360deg);
   }
 }
+
+/* Mobile: larger touch targets */
+@media (max-width: 768px) {
+  .sizeSm {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.9rem;
+    min-height: 44px;
+  }
+
+  .sizeMd {
+    font-size: 0.85rem;
+    padding: 0.6rem 1.1rem;
+    min-height: 44px;
+  }
+}

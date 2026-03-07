@@ -334,3 +334,16 @@
   font-size: 0.72rem;
   color: var(--hull-grey);
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .input { font-size: 16px; min-height: 44px; }
+  .colorPicker { min-width: 44px; min-height: 44px; }
+  .toggleSwitch { min-width: 44px; min-height: 24px; }
+  .toggleDesc { font-size: 0.68rem; }
+  .connectionLabel { font-size: 0.68rem; }
+}

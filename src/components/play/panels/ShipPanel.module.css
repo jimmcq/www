@@ -435,3 +435,24 @@
   text-align: center;
   padding: 1.5rem 0.5rem;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .tab { padding: 0.55rem 0.5rem; font-size: 0.75rem; min-height: 44px; }
+  .statsGrid { grid-template-columns: 1fr; }
+  .moduleItem { padding: 0.55rem 0.6rem; min-height: 44px; }
+  .moduleName { font-size: 0.85rem; }
+  .moduleType { font-size: 0.68rem; }
+  .uninstallBtn,
+  .storeBtn,
+  .repairModBtn { padding: 0.45rem; min-width: 44px; min-height: 44px; }
+  .actionBtn { font-size: 0.75rem; padding: 0.5rem 0.75rem; min-height: 44px; }
+  .slotLabel { font-size: 0.72rem; }
+  .slotValue { font-size: 0.72rem; }
+  .speedLabel { font-size: 0.72rem; }
+  .speedValue { font-size: 0.78rem; }
+}

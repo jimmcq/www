@@ -335,3 +335,18 @@
   text-align: center;
   padding: 1.5rem 0.5rem;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 0.5rem 0.75rem; }
+  .content { padding: 0.5rem; gap: 0.5rem; }
+  .title { font-size: 0.8rem; }
+  .sectionTitle { font-size: 0.78rem; }
+  .refreshBtn { padding: 0.5rem; min-width: 44px; min-height: 44px; }
+  .recipeCount { font-size: 0.68rem; }
+  .recipeRow { font-size: 0.68rem; }
+  .recipeCategory { font-size: 0.68rem; }
+  .recipeCraftBtn { min-height: 44px; padding: 0.4rem 0.75rem; }
+  .skillCategory { font-size: 0.68rem; }
+  .skillXp { font-size: 0.68rem; }
+}
