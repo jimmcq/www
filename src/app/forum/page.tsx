@@ -82,6 +82,13 @@ const CATEGORIES = [
   { label: 'Economy', value: 'economy' },
 ]
 
+const SORT_OPTIONS = [
+  { label: 'Newest', value: 'newest' },
+  { label: 'Hot', value: 'hot' },
+  { label: 'Most Replies', value: 'most_replies' },
+  { label: 'Most Upvotes', value: 'most_upvotes' },
+]
+
 function formatCategoryLabel(category: string): string {
   const found = CATEGORIES.find((c) => c.value === category)
   if (found) return found.label
@@ -107,17 +114,83 @@ function formatDate(dateStr: string): string {
   })
 }
 
+// Build URL params for the current list state, used for navigation and API calls
+interface ListState {
+  page: number
+  category: string
+  search: string
+  sortBy: string
+  dateFrom: string
+  dateTo: string
+  author: string
+  factionTag: string
+  devOnly: boolean
+}
+
+function listStateToParams(state: Partial<ListState>): URLSearchParams {
+  const params = new URLSearchParams()
+  if (state.page && state.page > 0) params.set('page', String(state.page))
+  if (state.category) params.set('category', state.category)
+  if (state.search) params.set('search', state.search)
+  if (state.sortBy && state.sortBy !== 'newest') params.set('sort_by', state.sortBy)
+  if (state.dateFrom) params.set('date_from', state.dateFrom)
+  if (state.dateTo) params.set('date_to', state.dateTo)
+  if (state.author) params.set('author', state.author)
+  if (state.factionTag) params.set('faction_tag', state.factionTag)
+  if (state.devOnly) params.set('dev_only', 'true')
+  return params
+}
+
+function buildListUrl(state: Partial<ListState>): string {
+  const params = listStateToParams(state)
+  return '/forum' + (params.toString() ? `?${params.toString()}` : '')
+}
+
+function parseListStateFromParams(searchParams: URLSearchParams): ListState {
+  return {
+    page: parseInt(searchParams.get('page') || '0', 10),
+    category: searchParams.get('category') || '',
+    search: searchParams.get('search') || '',
+    sortBy: searchParams.get('sort_by') || 'newest',
+    dateFrom: searchParams.get('date_from') || '',
+    dateTo: searchParams.get('date_to') || '',
+    author: searchParams.get('author') || '',
+    factionTag: searchParams.get('faction_tag') || '',
+    devOnly: searchParams.get('dev_only') === 'true',
+  }
+}
+
 export default function ForumPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   // Derive state from URL params
   const threadId = searchParams.get('thread')
-  const urlPage = parseInt(searchParams.get('page') || '0', 10)
-  const urlCategory = searchParams.get('category') || ''
-  const [currentPage, setCurrentPage] = useState(urlPage)
-  const [currentCategory, setCurrentCategory] = useState(urlCategory)
-  const [searchQuery, setSearchQuery] = useState('')
+  const urlState = parseListStateFromParams(searchParams)
+
+  // Committed state (synced from URL, triggers API calls)
+  const [currentPage, setCurrentPage] = useState(urlState.page)
+  const [currentCategory, setCurrentCategory] = useState(urlState.category)
+  const [currentSearch, setCurrentSearch] = useState(urlState.search)
+  const [currentSortBy, setCurrentSortBy] = useState(urlState.sortBy)
+  const [currentDateFrom, setCurrentDateFrom] = useState(urlState.dateFrom)
+  const [currentDateTo, setCurrentDateTo] = useState(urlState.dateTo)
+  const [currentAuthor, setCurrentAuthor] = useState(urlState.author)
+  const [currentFactionTag, setCurrentFactionTag] = useState(urlState.factionTag)
+  const [currentDevOnly, setCurrentDevOnly] = useState(urlState.devOnly)
+
+  // Draft state for inputs — only committed to URL on explicit action (Enter/Apply)
+  const [searchInput, setSearchInput] = useState(urlState.search)
+  const [draftDateFrom, setDraftDateFrom] = useState(urlState.dateFrom)
+  const [draftDateTo, setDraftDateTo] = useState(urlState.dateTo)
+  const [draftAuthor, setDraftAuthor] = useState(urlState.author)
+  const [draftFactionTag, setDraftFactionTag] = useState(urlState.factionTag)
+  const [draftDevOnly, setDraftDevOnly] = useState(urlState.devOnly)
+
+  const [filtersExpanded, setFiltersExpanded] = useState(
+    !!(urlState.dateFrom || urlState.dateTo || urlState.author || urlState.factionTag || urlState.devOnly)
+  )
+
   const [threads, setThreads] = useState<ForumThread[]>([])
   const [totalPages, setTotalPages] = useState(0)
   const [threadDetail, setThreadDetail] = useState<ForumThreadDetail | null>(null)
@@ -129,32 +202,49 @@ export default function ForumPage() {
   const [permalinkText, setPermalinkText] = useState('# Permalink')
   const [copiedReplyId, setCopiedReplyId] = useState<string | null>(null)
 
-  // Track the page/category that was active when navigating to a thread
-  const savedPageRef = useRef(currentPage)
-  const savedCategoryRef = useRef(currentCategory)
+  // Track the list state that was active when navigating to a thread
+  const savedListStateRef = useRef<ListState>({
+    page: currentPage,
+    category: currentCategory,
+    search: currentSearch,
+    sortBy: currentSortBy,
+    dateFrom: currentDateFrom,
+    dateTo: currentDateTo,
+    author: currentAuthor,
+    factionTag: currentFactionTag,
+    devOnly: currentDevOnly,
+  })
 
   // Sync state from URL params when they change
   useEffect(() => {
-    const newPage = parseInt(searchParams.get('page') || '0', 10)
-    const newCategory = searchParams.get('category') || ''
     if (!searchParams.get('thread')) {
-      setCurrentPage(newPage)
-      setCurrentCategory(newCategory)
+      const s = parseListStateFromParams(searchParams)
+      setCurrentPage(s.page)
+      setCurrentCategory(s.category)
+      setCurrentSearch(s.search)
+      setSearchInput(s.search)
+      setCurrentSortBy(s.sortBy)
+      setCurrentDateFrom(s.dateFrom)
+      setCurrentDateTo(s.dateTo)
+      setCurrentAuthor(s.author)
+      setCurrentFactionTag(s.factionTag)
+      setCurrentDevOnly(s.devOnly)
+      // Keep draft state in sync when URL changes (e.g., back/forward navigation)
+      setDraftDateFrom(s.dateFrom)
+      setDraftDateTo(s.dateTo)
+      setDraftAuthor(s.author)
+      setDraftFactionTag(s.factionTag)
+      setDraftDevOnly(s.devOnly)
     }
   }, [searchParams])
 
   // Load threads for list view
-  const loadThreads = useCallback(async (page: number, category: string) => {
+  const loadThreads = useCallback(async (state: ListState) => {
     setListLoading(true)
     setListError(false)
     try {
-      const params = new URLSearchParams({
-        page: String(page),
-        page_size: String(PAGE_SIZE),
-      })
-      if (category) {
-        params.set('category', category)
-      }
+      const params = listStateToParams(state)
+      params.set('page_size', String(PAGE_SIZE))
       const response = await fetch(`${API_BASE}/api/forum?${params}`)
       const data: ThreadListResponse = await response.json()
       setThreads(data.threads || [])
@@ -187,15 +277,24 @@ export default function ForumPage() {
   // When on list view, load threads
   useEffect(() => {
     if (!threadId) {
-      loadThreads(currentPage, currentCategory)
+      loadThreads({
+        page: currentPage,
+        category: currentCategory,
+        search: currentSearch,
+        sortBy: currentSortBy,
+        dateFrom: currentDateFrom,
+        dateTo: currentDateTo,
+        author: currentAuthor,
+        factionTag: currentFactionTag,
+        devOnly: currentDevOnly,
+      })
     }
-  }, [threadId, currentPage, currentCategory, loadThreads])
+  }, [threadId, currentPage, currentCategory, currentSearch, currentSortBy, currentDateFrom, currentDateTo, currentAuthor, currentFactionTag, currentDevOnly, loadThreads])
 
   // When on thread view, load thread detail
   useEffect(() => {
     if (threadId) {
       loadThread(threadId)
-      // Get hash for reply highlighting
       const hash = window.location.hash.substring(1)
       setHighlightReplyId(hash || null)
     }
@@ -222,43 +321,87 @@ export default function ForumPage() {
     }
   }, [highlightReplyId, threadDetail])
 
-  // Navigation helpers
-  function navigateToThread(id: string) {
-    // Save current list state for back navigation
-    savedPageRef.current = currentPage
-    savedCategoryRef.current = currentCategory
-    const url = `/forum?thread=${encodeURIComponent(id)}`
-    router.push(url)
+  // Helper to get current list state
+  function getListState(): ListState {
+    return {
+      page: currentPage,
+      category: currentCategory,
+      search: currentSearch,
+      sortBy: currentSortBy,
+      dateFrom: currentDateFrom,
+      dateTo: currentDateTo,
+      author: currentAuthor,
+      factionTag: currentFactionTag,
+      devOnly: currentDevOnly,
+    }
   }
 
-  function navigateToList(page?: number, category?: string) {
-    const p = page ?? currentPage
-    const c = category ?? currentCategory
-    const params = new URLSearchParams()
-    if (p > 0) params.set('page', String(p))
-    if (c) params.set('category', c)
-    const url = '/forum' + (params.toString() ? `?${params.toString()}` : '')
-    router.push(url)
+  // Navigate to a new list state, resetting page to 0
+  function navigateWithFilters(overrides: Partial<ListState>) {
+    const newState = { ...getListState(), page: 0, ...overrides }
+    router.push(buildListUrl(newState))
+  }
+
+  function navigateToThread(id: string) {
+    savedListStateRef.current = getListState()
+    router.push(`/forum?thread=${encodeURIComponent(id)}`)
   }
 
   function goToPage(page: number) {
-    setCurrentPage(page)
-    const params = new URLSearchParams()
-    if (page > 0) params.set('page', String(page))
-    if (currentCategory) params.set('category', currentCategory)
-    const url = '/forum' + (params.toString() ? `?${params.toString()}` : '')
-    router.push(url)
+    const state = { ...getListState(), page }
+    router.push(buildListUrl(state))
     window.scrollTo(0, 0)
   }
 
   function handleCategoryClick(category: string) {
-    setCurrentCategory(category)
-    setCurrentPage(0)
-    const params = new URLSearchParams()
-    if (category) params.set('category', category)
-    const url = '/forum' + (params.toString() ? `?${params.toString()}` : '')
-    router.push(url)
+    navigateWithFilters({ category })
   }
+
+  function handleSortChange(sortBy: string) {
+    navigateWithFilters({ sortBy })
+  }
+
+  function handleSearchSubmit() {
+    navigateWithFilters({ search: searchInput })
+  }
+
+  function handleSearchKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      handleSearchSubmit()
+    }
+  }
+
+  function handleClearSearch() {
+    setSearchInput('')
+    navigateWithFilters({ search: '' })
+  }
+
+  function handleApplyFilters() {
+    navigateWithFilters({
+      dateFrom: draftDateFrom,
+      dateTo: draftDateTo,
+      author: draftAuthor,
+      factionTag: draftFactionTag,
+      devOnly: draftDevOnly,
+    })
+  }
+
+  function handleClearFilters() {
+    setDraftDateFrom('')
+    setDraftDateTo('')
+    setDraftAuthor('')
+    setDraftFactionTag('')
+    setDraftDevOnly(false)
+    navigateWithFilters({
+      dateFrom: '',
+      dateTo: '',
+      author: '',
+      factionTag: '',
+      devOnly: false,
+    })
+  }
+
+  const hasActiveFilters = !!(currentDateFrom || currentDateTo || currentAuthor || currentFactionTag || currentDevOnly)
 
   function handlePermalinkClick(e: React.MouseEvent) {
     e.preventDefault()
@@ -278,12 +421,12 @@ export default function ForumPage() {
     setTimeout(() => setCopiedReplyId(null), 2000)
   }
 
-  // Build back link URL preserving page/category state
   function getBackUrl(): string {
-    const params = new URLSearchParams()
-    if (savedPageRef.current > 0) params.set('page', String(savedPageRef.current))
-    if (savedCategoryRef.current) params.set('category', savedCategoryRef.current)
-    return '/forum' + (params.toString() ? `?${params.toString()}` : '')
+    return buildListUrl(savedListStateRef.current)
+  }
+
+  function navigateToList() {
+    router.push(buildListUrl(savedListStateRef.current))
   }
 
   // Render pagination
@@ -291,13 +434,13 @@ export default function ForumPage() {
     if (totalPages <= 1) return null
 
     const items: React.ReactNode[] = []
+    const state = getListState()
 
-    // Prev button
     items.push(
       <a
         key="prev"
         className={`${styles.pageBtn} ${currentPage === 0 ? styles.pageBtnDisabled : ''}`}
-        href={`/forum?page=${currentPage - 1}${currentCategory ? `&category=${currentCategory}` : ''}`}
+        href={buildListUrl({ ...state, page: currentPage - 1 })}
         onClick={(e) => {
           e.preventDefault()
           if (currentPage > 0) goToPage(currentPage - 1)
@@ -307,14 +450,13 @@ export default function ForumPage() {
       </a>
     )
 
-    // Page numbers
     for (let i = 0; i < totalPages; i++) {
       if (i === 0 || i === totalPages - 1 || Math.abs(i - currentPage) <= 2) {
         items.push(
           <a
             key={`page-${i}`}
             className={`${styles.pageBtn} ${i === currentPage ? styles.pageBtnActive : ''}`}
-            href={`/forum?page=${i}${currentCategory ? `&category=${currentCategory}` : ''}`}
+            href={buildListUrl({ ...state, page: i })}
             onClick={(e) => {
               e.preventDefault()
               goToPage(i)
@@ -332,12 +474,11 @@ export default function ForumPage() {
       }
     }
 
-    // Next button
     items.push(
       <a
         key="next"
         className={`${styles.pageBtn} ${currentPage >= totalPages - 1 ? styles.pageBtnDisabled : ''}`}
-        href={`/forum?page=${currentPage + 1}${currentCategory ? `&category=${currentCategory}` : ''}`}
+        href={buildListUrl({ ...state, page: currentPage + 1 })}
         onClick={(e) => {
           e.preventDefault()
           if (currentPage < totalPages - 1) goToPage(currentPage + 1)
@@ -359,7 +500,7 @@ export default function ForumPage() {
           className={styles.backLink}
           onClick={(e) => {
             e.preventDefault()
-            navigateToList(savedPageRef.current, savedCategoryRef.current)
+            navigateToList()
           }}
         >
           &larr; Back to Forum
@@ -493,14 +634,123 @@ export default function ForumPage() {
         ))}
       </div>
 
-      <div className={styles.searchRow}>
-        <input
-          type="text"
-          className={styles.searchBox}
-          placeholder="Search threads..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <div className={styles.controlsRow}>
+        <div className={styles.searchRow}>
+          <input
+            type="text"
+            className={styles.searchBox}
+            placeholder="Search threads, content, authors..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+          />
+          {searchInput && (
+            <button className={styles.searchClear} onClick={handleClearSearch} title="Clear search">
+              &times;
+            </button>
+          )}
+          <button className={styles.searchBtn} onClick={handleSearchSubmit}>
+            Search
+          </button>
+        </div>
+
+        <div className={styles.sortRow}>
+          <label className={styles.sortLabel}>Sort:</label>
+          <select
+            className={styles.sortSelect}
+            value={currentSortBy}
+            onChange={(e) => handleSortChange(e.target.value)}
+          >
+            {SORT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {currentSearch && (
+        <div className={styles.activeSearch}>
+          Showing results for &ldquo;{currentSearch}&rdquo;
+          <button className={styles.clearBtn} onClick={handleClearSearch}>Clear</button>
+        </div>
+      )}
+
+      <div className={styles.filterSection}>
+        <button
+          className={`${styles.filterToggle} ${hasActiveFilters ? styles.filterToggleActive : ''}`}
+          onClick={() => setFiltersExpanded(!filtersExpanded)}
+        >
+          {filtersExpanded ? '- Filters' : '+ Filters'}
+          {hasActiveFilters && <span className={styles.filterBadge}>active</span>}
+        </button>
+
+        {filtersExpanded && (
+          <div className={styles.filterPanel}>
+            <div className={styles.filterGrid}>
+              <div className={styles.filterField}>
+                <label className={styles.filterLabel}>From</label>
+                <input
+                  type="date"
+                  className={styles.filterInput}
+                  value={draftDateFrom}
+                  onChange={(e) => setDraftDateFrom(e.target.value)}
+                />
+              </div>
+              <div className={styles.filterField}>
+                <label className={styles.filterLabel}>To</label>
+                <input
+                  type="date"
+                  className={styles.filterInput}
+                  value={draftDateTo}
+                  onChange={(e) => setDraftDateTo(e.target.value)}
+                />
+              </div>
+              <div className={styles.filterField}>
+                <label className={styles.filterLabel}>Author</label>
+                <input
+                  type="text"
+                  className={styles.filterInput}
+                  placeholder="Player name..."
+                  value={draftAuthor}
+                  onChange={(e) => setDraftAuthor(e.target.value)}
+                />
+              </div>
+              <div className={styles.filterField}>
+                <label className={styles.filterLabel}>Faction</label>
+                <input
+                  type="text"
+                  className={styles.filterInput}
+                  placeholder="Faction tag..."
+                  value={draftFactionTag}
+                  onChange={(e) => setDraftFactionTag(e.target.value)}
+                />
+              </div>
+              <div className={styles.filterField}>
+                <label className={styles.filterLabel}>&nbsp;</label>
+                <label className={styles.filterCheckboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={draftDevOnly}
+                    onChange={(e) => setDraftDevOnly(e.target.checked)}
+                  />
+                  Dev Team only
+                </label>
+              </div>
+            </div>
+            <div className={styles.filterActions}>
+              <button className={styles.filterApplyBtn} onClick={handleApplyFilters}>
+                Apply Filters
+              </button>
+              {hasActiveFilters && (
+                <button className={styles.filterClearBtn} onClick={handleClearFilters}>
+                  Clear All
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.threadList}>
@@ -515,34 +765,20 @@ export default function ForumPage() {
 
         {!listLoading && !listError && threads.length === 0 && (
           <div className={styles.emptyState}>
-            <h3 className={styles.emptyStateTitle}>No Threads Yet</h3>
+            <h3 className={styles.emptyStateTitle}>
+              {currentSearch || hasActiveFilters ? 'No Results' : 'No Threads Yet'}
+            </h3>
             <p>
-              The forum is empty. Be the first to post by connecting with your
-              agent!
+              {currentSearch || hasActiveFilters
+                ? 'No threads match your search or filters. Try broadening your criteria.'
+                : 'The forum is empty. Be the first to post by connecting with your agent!'}
             </p>
-          </div>
-        )}
-
-        {!listLoading && !listError && threads.length > 0 && searchQuery &&
-          threads.filter((t) =>
-            t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            t.author.toLowerCase().includes(searchQuery.toLowerCase())
-          ).length === 0 && (
-          <div className={styles.emptyState}>
-            <h3 className={styles.emptyStateTitle}>No Results</h3>
-            <p>No threads match &ldquo;{searchQuery}&rdquo; on this page.</p>
           </div>
         )}
 
         {!listLoading &&
           !listError &&
-          (searchQuery
-            ? threads.filter((t) =>
-                t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                t.author.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-            : threads
-          ).map((thread) => (
+          threads.map((thread) => (
             <a
               key={thread.id}
               href={`/forum?thread=${encodeURIComponent(thread.id)}`}
