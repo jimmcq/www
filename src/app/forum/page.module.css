@@ -56,7 +56,7 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .categoryBtn {
@@ -81,13 +81,24 @@
   background: rgba(0, 212, 255, 0.1);
 }
 
-/* Search */
-.searchRow {
+/* Controls Row (search + sort) */
+.controlsRow {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
   margin-bottom: 1rem;
 }
 
+/* Search */
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
 .searchBox {
-  width: 100%;
+  flex: 1;
   max-width: 400px;
   padding: 0.5rem 1rem;
   font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
@@ -106,6 +117,257 @@
 
 .searchBox:focus {
   border-color: var(--plasma-cyan);
+}
+
+.searchClear {
+  background: none;
+  border: none;
+  color: var(--hull-grey);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.searchClear:hover {
+  color: var(--star-white);
+}
+
+.searchBtn {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  background: var(--nebula-blue);
+  border: 1px solid var(--hull-grey);
+  color: var(--plasma-cyan);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.searchBtn:hover {
+  border-color: var(--plasma-cyan);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+/* Sort */
+.sortRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.sortLabel {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--chrome-silver);
+}
+
+.sortSelect {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--nebula-blue);
+  border: 1px solid var(--hull-grey);
+  color: var(--star-white);
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sortSelect:focus {
+  border-color: var(--plasma-cyan);
+}
+
+.sortSelect option {
+  background: var(--nebula-blue);
+  color: var(--star-white);
+}
+
+/* Active search indicator */
+.activeSearch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--chrome-silver);
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.clearBtn {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  background: none;
+  border: 1px solid var(--hull-grey);
+  color: var(--chrome-silver);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearBtn:hover {
+  border-color: var(--plasma-cyan);
+  color: var(--plasma-cyan);
+}
+
+/* Filter Section */
+.filterSection {
+  margin-bottom: 1rem;
+}
+
+.filterToggle {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  background: none;
+  border: 1px solid var(--hull-grey);
+  color: var(--chrome-silver);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filterToggle:hover {
+  border-color: var(--plasma-cyan);
+  color: var(--plasma-cyan);
+}
+
+.filterToggleActive {
+  border-color: var(--shell-orange);
+  color: var(--shell-orange);
+}
+
+.filterBadge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.35rem;
+  background: var(--shell-orange);
+  color: var(--space-black);
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.filterPanel {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--hull-grey);
+  border-radius: 8px;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.filterLabel {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--chrome-silver);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filterInput {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--nebula-blue);
+  border: 1px solid var(--hull-grey);
+  color: var(--star-white);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filterInput:focus {
+  border-color: var(--plasma-cyan);
+}
+
+.filterInput::placeholder {
+  color: var(--hull-grey);
+}
+
+/* Date inputs need special styling for the calendar icon */
+.filterInput[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
+
+.filterCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--chrome-silver);
+  cursor: pointer;
+  padding-top: 0.3rem;
+}
+
+.filterCheckboxLabel input[type="checkbox"] {
+  accent-color: var(--plasma-cyan);
+  cursor: pointer;
+}
+
+.filterActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filterApplyBtn {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.4rem 1rem;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid var(--plasma-cyan);
+  color: var(--plasma-cyan);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterApplyBtn:hover {
+  background: rgba(0, 212, 255, 0.2);
+}
+
+.filterClearBtn {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  background: none;
+  border: 1px solid var(--hull-grey);
+  color: var(--chrome-silver);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterClearBtn:hover {
+  border-color: var(--shell-orange);
+  color: var(--shell-orange);
 }
 
 /* Thread List */
@@ -533,6 +795,22 @@
     padding: 8rem 1rem 2rem;
   }
 
+  .controlsRow {
+    flex-direction: column;
+  }
+
+  .searchRow {
+    width: 100%;
+  }
+
+  .searchBox {
+    max-width: none;
+  }
+
+  .filterGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .threadHeader {
     flex-direction: column;
     gap: 0.5rem;
@@ -546,5 +824,11 @@
 
   .threadDetailTitle {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterGrid {
+    grid-template-columns: 1fr;
   }
 }
