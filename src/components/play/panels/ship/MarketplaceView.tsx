@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   Store,
   RefreshCw,
@@ -50,58 +50,23 @@ export function MarketplaceView() {
   const [listPrice, setListPrice] = useState('')
   const [loadingList, setLoadingList] = useState(false)
 
-  // Track event log to detect responses
-  const lastEventLenRef = useRef(state.eventLog.length)
-
-  // Watch event log for responses
-  useEffect(() => {
-    if (state.eventLog.length <= lastEventLenRef.current) {
-      lastEventLenRef.current = state.eventLog.length
-      return
-    }
-
-    const newCount = state.eventLog.length - lastEventLenRef.current
-    lastEventLenRef.current = state.eventLog.length
-
-    for (let i = 0; i < newCount; i++) {
-      const entry = state.eventLog[i]
-      if (!entry) continue
-
-      const data = entry.data as Record<string, unknown> | undefined
-      if (!data) continue
-
-      if (data.action === 'browse_ships' && data.listings) {
-        setListings(data as unknown as BrowseShipsResponse)
-        setLoadingBrowse(false)
-      }
-      if (data.action === 'buy_listed_ship') {
-        setBuyConfirm(null)
-        // Refresh listings after purchase
-        sendCommand('browse_ships')
-      }
-      if (data.action === 'list_ship_for_sale') {
-        setLoadingList(false)
-        setListShipId('')
-        setListPrice('')
-        // Refresh listings and fleet
-        sendCommand('browse_ships')
-        sendCommand('list_ships')
-      }
-      if (data.action === 'cancel_ship_listing') {
-        setCancelConfirm(null)
-        sendCommand('browse_ships')
-      }
-    }
-  }, [state.eventLog, sendCommand])
-
   // Auto-fetch when docked
   useEffect(() => {
     if (isDocked && !listings) {
       setLoadingBrowse(true)
-      sendCommand('browse_ships')
-      setTimeout(() => setLoadingBrowse(false), 5000)
+      sendCommand('browse_ships').then((resp) => {
+        const data = resp as unknown as BrowseShipsResponse | undefined
+        if (data?.listings) {
+          setListings(data)
+        } else {
+          setListings({ base_name: '', listings: [] })
+        }
+        setLoadingBrowse(false)
+      }).catch(() => {
+        setLoadingBrowse(false)
+      })
     }
-  }, [isDocked, listings, sendCommand])
+  }, [isDocked]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Also fetch fleet data for listing ships
   useEffect(() => {
@@ -112,16 +77,27 @@ export function MarketplaceView() {
 
   const handleRefresh = useCallback(() => {
     setLoadingBrowse(true)
-    sendCommand('browse_ships')
-    setTimeout(() => setLoadingBrowse(false), 5000)
+    sendCommand('browse_ships').then((resp) => {
+      const data = resp as unknown as BrowseShipsResponse | undefined
+      if (data?.listings) {
+        setListings(data)
+      } else {
+        setListings({ base_name: '', listings: [] })
+      }
+      setLoadingBrowse(false)
+    }).catch(() => {
+      setLoadingBrowse(false)
+    })
   }, [sendCommand])
 
   const handleBuy = useCallback(
     (listingId: string) => {
-      sendCommand('buy_listed_ship', { listing_id: listingId })
+      sendCommand('buy_listed_ship', { listing_id: listingId }).then(() => {
+        handleRefresh()
+      })
       setBuyConfirm(null)
     },
-    [sendCommand]
+    [sendCommand, handleRefresh]
   )
 
   const handleListShip = useCallback(() => {
@@ -129,16 +105,25 @@ export function MarketplaceView() {
     const price = parseInt(listPrice, 10)
     if (isNaN(price) || price <= 0) return
     setLoadingList(true)
-    sendCommand('list_ship_for_sale', { ship_id: listShipId, price })
-    setTimeout(() => setLoadingList(false), 5000)
-  }, [listShipId, listPrice, sendCommand])
+    sendCommand('list_ship_for_sale', { ship_id: listShipId, price }).then(() => {
+      setLoadingList(false)
+      setListShipId('')
+      setListPrice('')
+      handleRefresh()
+      sendCommand('list_ships')
+    }).catch(() => {
+      setLoadingList(false)
+    })
+  }, [listShipId, listPrice, sendCommand, handleRefresh])
 
   const handleCancelListing = useCallback(
     (listingId: string) => {
-      sendCommand('cancel_ship_listing', { listing_id: listingId })
+      sendCommand('cancel_ship_listing', { listing_id: listingId }).then(() => {
+        handleRefresh()
+      })
       setCancelConfirm(null)
     },
-    [sendCommand]
+    [sendCommand, handleRefresh]
   )
 
   if (!isDocked) {
@@ -223,7 +208,7 @@ export function MarketplaceView() {
         )}
 
         {listings && otherListings.length === 0 && ownListings.length === 0 && (
-          <div className={styles.emptyState}>No ships listed at this base</div>
+          <div className={styles.emptyState}>No ships currently for sale at this base.</div>
         )}
 
         {otherListings.length > 0 && (

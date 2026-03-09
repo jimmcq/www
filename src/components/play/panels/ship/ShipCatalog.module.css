@@ -365,6 +365,29 @@
   font-weight: 600;
 }
 
+/* Ship image */
+.shipImage {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(61, 90, 108, 0.2);
+}
+
+.tierBadge {
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--shell-orange);
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+  align-self: flex-start;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .header { padding: 0.5rem 0.75rem; }

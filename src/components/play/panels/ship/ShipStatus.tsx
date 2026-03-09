@@ -62,13 +62,13 @@ export function ShipStatus() {
         {isDocked && (ship.fuel < ship.max_fuel || ship.hull < ship.max_hull) && (
           <div className={styles.actionsRow}>
             {ship.fuel < ship.max_fuel && (
-              <button className={styles.fuelBtn} onClick={handleRefuel}>
+              <button className={styles.fuelBtn} onClick={handleRefuel} title="Refuel ship at station">
                 <Fuel size={14} />
                 Refuel
               </button>
             )}
             {ship.hull < ship.max_hull && (
-              <button className={styles.repairBtn} onClick={handleRepair}>
+              <button className={styles.repairBtn} onClick={handleRepair} title="Repair hull at station">
                 <Wrench size={14} />
                 Repair
               </button>
@@ -78,10 +78,18 @@ export function ShipStatus() {
 
         {/* Ship overview */}
         <div className={styles.shipOverview}>
-          <div className={styles.shipClass}>{ship.class}</div>
-          {ship.name && ship.name !== ship.class && (
-            <div className={styles.shipName}>&quot;{ship.name}&quot;</div>
-          )}
+          <img
+            src={`/images/ships/catalog/${ship.class.toLowerCase().replace(/\s+/g, '_')}.webp`}
+            alt={ship.class}
+            className={styles.shipImage}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+          <div>
+            <div className={styles.shipClass}>{ship.class}</div>
+            {ship.name && ship.name !== ship.class && (
+              <div className={styles.shipName}>&quot;{ship.name}&quot;</div>
+            )}
+          </div>
         </div>
 
         {/* Stats grid */}

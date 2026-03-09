@@ -13,6 +13,12 @@ import {
 import { useGame } from '../../GameProvider'
 import styles from '../ShipPanel.module.css'
 
+function formatModuleId(id: string): string {
+  return id
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
 export function ShipModules() {
   const { state, sendCommand } = useGame()
   const ship = state.ship
@@ -89,9 +95,10 @@ export function ShipModules() {
                 <div
                   key={mod.instance_id || `${mod.module_id}-${idx}`}
                   className={styles.moduleItem}
+                  title={`${mod.name || formatModuleId(mod.module_id)} — ${mod.type} (${mod.slot_type} slot)\nCPU: ${mod.cpu_cost} | Power: ${mod.power_cost}${mod.quality !== undefined ? ` | Quality: ${mod.quality}%` : ''}${mod.wear !== undefined && mod.wear > 0 ? ` | Wear: ${mod.wear}%` : ''}`}
                 >
                   <div className={styles.moduleLeft}>
-                    <span className={styles.moduleName}>{mod.name}</span>
+                    <span className={styles.moduleName}>{mod.name || formatModuleId(mod.module_id)}</span>
                     <div className={styles.moduleMeta}>
                       <span className={styles.moduleType}>
                         {mod.slot_type} / {mod.type}

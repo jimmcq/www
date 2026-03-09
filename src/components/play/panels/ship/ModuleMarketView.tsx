@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   CircuitBoard,
   RefreshCw,
@@ -75,6 +75,13 @@ export function ModuleMarketView() {
     [sendCommand, handleLoad]
   )
 
+  // Auto-load when docked
+  useEffect(() => {
+    if (isDocked && !marketData && !loading) {
+      handleLoad()
+    }
+  }, [isDocked]) // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!isDocked) {
     return (
       <div className={styles.dockedOnly}>
@@ -111,9 +118,9 @@ export function ModuleMarketView() {
       )}
 
       {!loading && !marketData && !error && (
-        <div className={styles.emptyState}>
-          Click refresh to load available modules.
-        </div>
+        <button className={styles.emptyState} onClick={handleLoad} style={{ cursor: 'pointer', border: 'none', background: 'none', width: '100%' }} type="button">
+          Click to load available modules
+        </button>
       )}
 
       {marketData && marketData.items.length === 0 && (

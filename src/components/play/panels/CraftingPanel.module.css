@@ -336,6 +336,188 @@
   padding: 1.5rem 0.5rem;
 }
 
+/* Filter row */
+.filterRow {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--hull-grey);
+  background: none;
+  border: 1px solid var(--dim-grey);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterBtn:hover {
+  color: var(--chrome-silver);
+  border-color: var(--hull-grey);
+}
+
+.filterBtnActive {
+  color: var(--plasma-cyan);
+  border-color: var(--plasma-cyan);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+/* Recipe grid */
+.recipeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.recipeCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.recipeCardCraftable {
+  composes: recipeCard;
+  background: rgba(45, 212, 191, 0.06);
+  border: 1px solid rgba(45, 212, 191, 0.2);
+}
+
+.recipeCardCraftable:hover {
+  background: rgba(45, 212, 191, 0.1);
+  border-color: rgba(45, 212, 191, 0.35);
+}
+
+.recipeCardLocked {
+  composes: recipeCard;
+  background: rgba(61, 90, 108, 0.06);
+  border: 1px solid rgba(61, 90, 108, 0.15);
+  opacity: 0.75;
+}
+
+.recipeCardLocked:hover {
+  opacity: 1;
+  background: rgba(61, 90, 108, 0.1);
+}
+
+.recipeCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  padding: 0.4rem 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+}
+
+.recipeCardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+  color: var(--hull-grey);
+}
+
+.recipeCardBody {
+  padding: 0.35rem 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-top: 1px solid rgba(61, 90, 108, 0.15);
+}
+
+/* Input status colors */
+.inputOk {
+  color: var(--bio-green);
+}
+
+.inputOk::after {
+  content: ', ';
+}
+
+.inputOk:last-child::after {
+  content: '';
+}
+
+.inputMissing {
+  color: var(--claw-red);
+}
+
+.inputMissing::after {
+  content: ', ';
+}
+
+.inputMissing:last-child::after {
+  content: '';
+}
+
+/* Skill requirement status */
+.skillMet {
+  color: var(--bio-green);
+}
+
+.skillMet::after {
+  content: ', ';
+}
+
+.skillMet:last-child::after {
+  content: '';
+}
+
+.skillUnmet {
+  color: var(--claw-red);
+}
+
+.skillUnmet::after {
+  content: ', ';
+}
+
+.skillUnmet:last-child::after {
+  content: '';
+}
+
+/* Reasons list */
+.reasonsList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.4rem;
+  background: rgba(230, 57, 70, 0.06);
+  border-radius: 3px;
+  font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--claw-red);
+}
+
+.reasonItem {
+  color: var(--claw-red);
+  opacity: 0.85;
+}
+
+.reasonItem::after {
+  content: ' | ';
+  opacity: 0.4;
+}
+
+.reasonItem:last-child::after {
+  content: '';
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .header { padding: 0.5rem 0.75rem; }
@@ -347,6 +529,7 @@
   .recipeRow { font-size: 0.68rem; }
   .recipeCategory { font-size: 0.68rem; }
   .recipeCraftBtn { min-height: 44px; padding: 0.4rem 0.75rem; }
+  .recipeGrid { grid-template-columns: 1fr; }
   .skillCategory { font-size: 0.68rem; }
   .skillXp { font-size: 0.68rem; }
 }

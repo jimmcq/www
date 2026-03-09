@@ -47,7 +47,10 @@ export function FleetView() {
 
   const handleSwitch = useCallback(
     (shipId: string) => {
-      sendCommand('switch_ship', { ship_id: shipId })
+      sendCommand('switch_ship', { ship_id: shipId }).then(() => {
+        sendCommand('get_status')
+        sendCommand('list_ships')
+      })
     },
     [sendCommand]
   )
@@ -212,6 +215,12 @@ function FleetCard({
           >
             {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           </button>
+          <img
+            src={`/images/ships/catalog/${(ship.class_name || ship.class_id).toLowerCase().replace(/\s+/g, '_')}.webp`}
+            alt={ship.class_name || ship.class_id}
+            className={styles.shipImage}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
           <span className={styles.fleetCardName}>
             {ship.class_name || ship.class_id}
           </span>

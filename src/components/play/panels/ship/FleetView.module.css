@@ -384,6 +384,16 @@
   transition: all 0.15s ease;
 }
 
+.shipImage {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(61, 90, 108, 0.2);
+}
+
 .inspectToggle:hover {
   color: var(--plasma-cyan);
   border-color: rgba(0, 212, 255, 0.3);

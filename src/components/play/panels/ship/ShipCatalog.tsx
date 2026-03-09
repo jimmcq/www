@@ -77,7 +77,7 @@ export function ShipCatalog() {
           </span>
           Shipyard
           {showroom && (
-            <span className={styles.shipyardLevel}>Lv{showroom.shipyard_level}</span>
+            <span className={styles.shipyardLevel} title={`Shipyard Level ${showroom.shipyard_level} — Higher levels unlock more advanced ships for purchase`}>Lv{showroom.shipyard_level}</span>
           )}
         </div>
         <div className={styles.headerActions}>
@@ -144,10 +144,17 @@ interface ShowroomCardProps {
 
 function ShowroomCard({ ship, credits, isDocked, onBuy }: ShowroomCardProps) {
   const canAfford = credits >= ship.showroom_price
+  const imgName = ship.name.toLowerCase().replace(/\s+/g, '_')
 
   return (
     <div className={styles.shipCard}>
       <div className={styles.shipCardTop}>
+        <img
+          src={`/images/ships/catalog/${imgName}.webp`}
+          alt={ship.name}
+          className={styles.shipImage}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
         <div className={styles.shipCardInfo}>
           <span className={styles.shipCardName}>{ship.name}</span>
           <span className={styles.shipCardClass}>{ship.category}</span>
@@ -180,6 +187,12 @@ function ShowroomCard({ ship, credits, isDocked, onBuy }: ShowroomCardProps) {
           <span className={styles.shipStatValue}>{ship.cargo}</span>
         </div>
       </div>
+
+      {ship.tier > 0 && (
+        <span className={styles.tierBadge} title={`Tier ${ship.tier} — Higher tiers are more powerful but require more skills and resources`}>
+          T{ship.tier}
+        </span>
+      )}
 
       <button
         className={styles.buyBtn}
