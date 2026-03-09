@@ -34,31 +34,14 @@ async function getChangelog(page: number): Promise<{
   currentVersion: string
 }> {
   try {
-    const sessionRes = await fetch(`${API_BASE}/api/v1/session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: '{}',
-    })
-    const sessionData = await sessionRes.json()
-    const sessionId: string | undefined = sessionData.session?.id
-    if (!sessionId) return { releases: [], total: 0, totalPages: 1, currentVersion: '' }
-
-    const res = await fetch(`${API_BASE}/api/v1/get_version`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Session-Id': sessionId,
-      },
-      body: JSON.stringify({ type: 'get_version', count: PER_PAGE, page }),
-    })
+    const res = await fetch(`${API_BASE}/api/changelog?page=${page}`)
     const data = await res.json()
-    if (!data.result) return { releases: [], total: 0, totalPages: 1, currentVersion: '' }
 
     return {
-      releases: data.result.versions ?? [],
-      total: data.result.total ?? 0,
-      totalPages: data.result.total_pages ?? 1,
-      currentVersion: data.result.version ?? '',
+      releases: data.releases ?? [],
+      total: data.total ?? 0,
+      totalPages: data.total_pages ?? 1,
+      currentVersion: data.current_version ?? '',
     }
   } catch {
     return { releases: [], total: 0, totalPages: 1, currentVersion: '' }
