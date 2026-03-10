@@ -167,12 +167,14 @@
 /* === Filter Bar === */
 .filterSection {
   margin-bottom: 2rem;
+  overflow-x: auto;
 }
 
 .filterRow {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  min-width: max-content;
 }
 
 .filterLabel {
@@ -633,6 +635,9 @@
   color: var(--chrome-silver);
   line-height: 1.7;
   opacity: 0.9;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
 }
 
 /* === Full Stats Grid === */
