@@ -246,6 +246,7 @@ export default function ShipsPage() {
   const [error, setError] = useState(false)
 
   const [activeEmpire, setActiveEmpire] = useState<string>('')
+  const [activeCategory, setActiveCategory] = useState<string>('')
   const [activeClasses, setActiveClasses] = useState<Set<string>>(new Set())
   const [activeTier, setActiveTier] = useState<number>(0)
   const [search, setSearch] = useState('')
@@ -321,10 +322,25 @@ export default function ShipsPage() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [zoomedShip])
 
+  const categories = useMemo(() => {
+    const seen = new Set<string>()
+    ships.forEach((s) => { if (s.category) seen.add(s.category) })
+    return Array.from(seen).sort()
+  }, [ships])
+
+  const visibleClasses = useMemo(() => {
+    if (!activeCategory) return classes
+    const inCategory = new Set(ships.filter((s) => s.category === activeCategory).map((s) => s.class))
+    return classes.filter((c) => inCategory.has(c))
+  }, [classes, ships, activeCategory])
+
   const filteredShips = useMemo(() => {
     let result = ships.filter((s) => s.empire !== '')
     if (activeEmpire) {
       result = result.filter((s) => s.empire === activeEmpire)
+    }
+    if (activeCategory) {
+      result = result.filter((s) => s.category === activeCategory)
     }
     if (activeClasses.size > 0) {
       result = result.filter((s) => activeClasses.has(s.class))
@@ -343,7 +359,7 @@ export default function ShipsPage() {
       )
     }
     return result
-  }, [ships, activeEmpire, activeClasses, activeTier, search])
+  }, [ships, activeEmpire, activeCategory, activeClasses, activeTier, search])
 
   const toggleExpand = (id: string) => {
     setAllExpanded(false)
@@ -391,6 +407,25 @@ export default function ShipsPage() {
 
       {!loading && !error && ships.length > 0 && (
         <div className={styles.filterSection}>
+          <div className={styles.filterRow}>
+            <span className={styles.filterLabel}>Category</span>
+            <button
+              className={`${styles.filterBtn} ${activeCategory === '' ? styles.filterBtnActive : ''}`}
+              onClick={() => setActiveCategory('')}
+            >
+              All
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterBtnActive : ''}`}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
           <div className={styles.filterRow}>
             <span className={styles.filterLabel}>Empire</span>
             <button
@@ -451,7 +486,7 @@ export default function ShipsPage() {
                     Clear all
                   </button>
                   <div className={styles.classDropdownList}>
-                    {classes.map((cls) => (
+                    {visibleClasses.map((cls) => (
                       <label key={cls} className={styles.classDropdownItem}>
                         <input
                           type="checkbox"
