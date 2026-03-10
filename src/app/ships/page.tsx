@@ -408,8 +408,8 @@ export default function ShipsPage() {
 
   const tableShips = useMemo(() => {
     return [...filteredShips].sort((a, b) => {
-      const av = (a as Record<string, unknown>)[sortCol]
-      const bv = (b as Record<string, unknown>)[sortCol]
+      const av = (a as unknown as Record<string, unknown>)[sortCol]
+      const bv = (b as unknown as Record<string, unknown>)[sortCol]
       let cmp = 0
       if (typeof av === 'number' && typeof bv === 'number') {
         cmp = av - bv
