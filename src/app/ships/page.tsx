@@ -105,154 +105,77 @@ function formatSkillName(id: string): string {
 }
 
 function GuideSection() {
-  const [openPanel, setOpenPanel] = useState<string | null>(null)
-
-  const togglePanel = (id: string) => {
-    setOpenPanel((prev) => (prev === id ? null : id))
-  }
-
-  const panels = [
-    {
-      id: 'showroom',
-      title: 'Buying from the Showroom',
-      content: (
-        <>
-          <p>
-            The fastest way to get a new ship. Dock at any station with a shipyard and browse the
-            showroom for ships ready for immediate purchase. Shipyard managers keep their showrooms
-            stocked by sourcing materials from the market and building ships in advance.
-          </p>
-          <p>
-            Showroom prices include a convenience markup over raw material and labor costs.
-            The tradeoff is simple: you pay a premium, but you fly out in your new ship immediately.
-          </p>
-          <p>
-            Your current ship stays docked at the station as a stored ship. You can switch back
-            to it anytime, or sell it.
-          </p>
-        </>
-      ),
-    },
-    {
-      id: 'commission',
-      title: 'Commissioning a Custom Build',
-      content: (
-        <>
-          <p>
-            For more control or better prices, commission a shipyard to build a ship to order.
-            There are two ways to pay:
-          </p>
-          <div className={styles.guideColumns}>
-            <div className={styles.guideColumn}>
-              <h5 className={styles.guideColumnTitle}>Credits Only</h5>
-              <p>
-                Pay the full cost upfront and the shipyard sources all materials from the galactic
-                market. The price includes a markup to cover the shipyard&apos;s sourcing risk. Your
-                commission goes through sourcing, building, and finally becomes ready to claim.
-              </p>
-            </div>
-            <div className={styles.guideColumn}>
-              <h5 className={styles.guideColumnTitle}>Provide Materials</h5>
-              <p>
-                Gather the build materials yourself &mdash; from mining, crafting, or buying on the
-                exchange &mdash; and you only pay labor. Significantly cheaper, but you need to
-                source every component listed in the ship&apos;s build materials.
-              </p>
-            </div>
-          </div>
-          <p>
-            Build times vary by ship class. When your commission is ready, return to the
-            shipyard to claim your new ship.
-          </p>
-        </>
-      ),
-    },
-    {
-      id: 'exchange',
-      title: 'Buying from Other Players',
-      content: (
-        <>
-          <p>
-            Players can list their stored ships for sale on any station&apos;s exchange. Prices vary
-            based on what the seller is asking &mdash; sometimes you&apos;ll find deals below showroom
-            price, especially for ships with modules already installed.
-          </p>
-          <p>
-            The player exchange also lets you buy empire-exclusive ships at stations outside
-            that empire&apos;s territory. Shipyards can only build their own empire&apos;s designs,
-            but player-to-player sales have no such restriction.
-          </p>
-        </>
-      ),
-    },
-    {
-      id: 'economy',
-      title: 'How Ships Fit Into the Economy',
-      content: (
-        <>
-          <p>
-            Ship production drives demand across the entire supply chain. Each ship requires
-            specific build materials &mdash; refined metals, electronic components, thruster
-            assemblies &mdash; that must be mined, refined, and crafted by players.
-          </p>
-          <p>
-            Shipyard managers are autonomous economic actors. They monitor their showroom
-            inventory, place buy orders on the exchange for materials they need, and build
-            ships to keep the showroom stocked. When players buy materials and sell them on
-            the exchange, shipyards become their customers.
-          </p>
-          <p>
-            Each empire&apos;s shipyards specialize in that empire&apos;s designs. Higher-tier
-            shipyards can build more advanced ships but require rarer materials. The price
-            you see on each ship card reflects the base cost &mdash; actual showroom and
-            commission prices fluctuate with material market conditions.
-          </p>
-        </>
-      ),
-    },
-  ]
+  const [open, setOpen] = useState(false)
 
   return (
     <div className={styles.guideSection}>
-      <div className={styles.guideSectionHeader}>
-        <h2 className={styles.guideSectionTitle}>How to Get Ships</h2>
-        <span className={styles.guideSectionHint}>click to expand</span>
-      </div>
-      <div className={styles.guidePanels}>
-        {panels.map((panel) => (
-          <div
-            key={panel.id}
-            className={`${styles.guidePanel} ${openPanel === panel.id ? styles.guidePanelOpen : ''}`}
+      <div className={`${styles.guidePanel} ${open ? styles.guidePanelOpen : ''}`}>
+        <button
+          className={styles.guidePanelToggle}
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+        >
+          <span className={styles.guidePanelTitle}>How to Get Ships</span>
+          <svg
+            className={styles.guidePanelChevron}
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
           >
-            <button
-              className={styles.guidePanelToggle}
-              onClick={() => togglePanel(panel.id)}
-              aria-expanded={openPanel === panel.id}
-            >
-              <span className={styles.guidePanelTitle}>{panel.title}</span>
-              <svg
-                className={styles.guidePanelChevron}
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-              >
-                <path
-                  d="M3 5L6 8L9 5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            {openPanel === panel.id && (
-              <div className={styles.guidePanelContent}>
-                {panel.content}
+            <path
+              d="M3 5L6 8L9 5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+        {open && (
+          <div className={styles.guidePanelContent}>
+            <div className={styles.guideColumns}>
+              <div className={styles.guideColumn}>
+                <h5 className={styles.guideColumnTitle}>Buying from the Showroom</h5>
+                <p>
+                  The fastest way to get a new ship. Dock at any station with a shipyard and browse
+                  the showroom for ships ready for immediate purchase. Shipyard managers keep their
+                  showrooms stocked by sourcing materials from the market and building ships in
+                  advance. Showroom prices include a convenience markup &mdash; you pay a premium,
+                  but you fly out immediately.
+                </p>
               </div>
-            )}
+              <div className={styles.guideColumn}>
+                <h5 className={styles.guideColumnTitle}>Commissioning a Custom Build</h5>
+                <p>
+                  For more control or better prices, commission a shipyard to build a ship to order.
+                  Pay credits only and the shipyard sources materials from the market (with a markup),
+                  or supply the build materials yourself and pay only labor. Significantly cheaper,
+                  but you source every component. Build times vary by ship class.
+                </p>
+              </div>
+              <div className={styles.guideColumn}>
+                <h5 className={styles.guideColumnTitle}>Buying from Other Players</h5>
+                <p>
+                  Players can list stored ships for sale on any station&apos;s exchange. Prices vary
+                  &mdash; sometimes below showroom price, especially for ships with modules installed.
+                  The player exchange also lets you buy empire-exclusive ships outside that
+                  empire&apos;s territory.
+                </p>
+              </div>
+              <div className={styles.guideColumn}>
+                <h5 className={styles.guideColumnTitle}>How Ships Fit Into the Economy</h5>
+                <p>
+                  Ship production drives demand across the entire supply chain. Each ship requires
+                  specific build materials that must be mined, refined, and crafted by players.
+                  Shipyard managers are autonomous economic actors &mdash; they place buy orders for
+                  materials and build ships to keep the showroom stocked. Prices fluctuate with
+                  market conditions.
+                </p>
+              </div>
+            </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   )
@@ -280,6 +203,12 @@ export default function ShipsPage() {
   const [allExpanded, setAllExpanded] = useState(false)
   const [classDropdownOpen, setClassDropdownOpen] = useState(false)
   const classDropdownRef = useRef<HTMLDivElement>(null)
+  const [empireDropdownOpen, setEmpireDropdownOpen] = useState(false)
+  const empireDropdownRef = useRef<HTMLDivElement>(null)
+  const [tierDropdownOpen, setTierDropdownOpen] = useState(false)
+  const tierDropdownRef = useRef<HTMLDivElement>(null)
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false)
+  const categoryDropdownRef = useRef<HTMLDivElement>(null)
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set())
   const [zoomedShip, setZoomedShip] = useState<Ship | null>(null)
 
@@ -324,9 +253,11 @@ export default function ShipsPage() {
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (classDropdownRef.current && !classDropdownRef.current.contains(e.target as Node)) {
-        setClassDropdownOpen(false)
-      }
+      const target = e.target as Node
+      if (classDropdownRef.current && !classDropdownRef.current.contains(target)) setClassDropdownOpen(false)
+      if (empireDropdownRef.current && !empireDropdownRef.current.contains(target)) setEmpireDropdownOpen(false)
+      if (tierDropdownRef.current && !tierDropdownRef.current.contains(target)) setTierDropdownOpen(false)
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(target)) setCategoryDropdownOpen(false)
     }
     document.addEventListener('mousedown', onClickOutside)
     return () => document.removeEventListener('mousedown', onClickOutside)
@@ -467,87 +398,123 @@ export default function ShipsPage() {
       {!loading && !error && ships.length > 0 && (
         <div className={styles.filterSection}>
           <div className={styles.filterRow}>
-            <span className={styles.filterLabel}>Category</span>
-            <button
-              className={`${styles.filterBtn} ${activeCategory === '' ? styles.filterBtnActive : ''}`}
-              onClick={() => setActiveCategory('')}
-            >
-              All
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterBtnActive : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
 
-          <div className={styles.filterRow}>
-            <span className={styles.filterLabel}>Empire</span>
-            <button
-              className={`${styles.filterBtn} ${activeEmpire === '' ? styles.filterBtnActive : ''}`}
-              onClick={() => setActiveEmpire('')}
-            >
-              All
-            </button>
-            {empires.map((empire) => (
+            {/* Empire dropdown */}
+            <div className={styles.classDropdown} ref={empireDropdownRef}>
               <button
-                key={empire.id}
-                className={`${styles.filterBtn} ${activeEmpire === empire.id ? styles.filterBtnActive : ''}`}
-                onClick={() => setActiveEmpire(empire.id)}
-                style={{
-                  borderColor: activeEmpire === empire.id ? EMPIRE_COLORS[empire.id] : undefined,
-                  color: activeEmpire === empire.id ? EMPIRE_COLORS[empire.id] : undefined,
-                }}
+                className={`${styles.filterBtn} ${styles.classDropdownToggle} ${activeEmpire ? styles.filterBtnActive : ''}`}
+                onClick={() => setEmpireDropdownOpen((v) => !v)}
+                aria-expanded={empireDropdownOpen}
+                aria-haspopup="true"
+                style={activeEmpire ? { borderColor: EMPIRE_COLORS[activeEmpire], color: EMPIRE_COLORS[activeEmpire] } : undefined}
               >
-                <span
-                  className={styles.empireDot}
-                  style={{ background: EMPIRE_COLORS[empire.id] }}
-                />
-                {empire.name}
+                {activeEmpire
+                  ? <><span className={styles.empireDot} style={{ background: EMPIRE_COLORS[activeEmpire] }} />{empires.find((e) => e.id === activeEmpire)?.name}</>
+                  : 'All Empires'}
+                <svg className={styles.classDropdownChevron} width="10" height="6" viewBox="0 0 10 6" fill="none">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
-            ))}
-            <div className={styles.filterRowRight}>
-              {viewMode === 'grid' && (
-                <button
-                  className={`${styles.filterBtn} ${allExpanded ? styles.filterBtnActive : ''}`}
-                  onClick={toggleExpandAll}
-                >
-                  {allExpanded ? 'Collapse All' : 'Expand All'}
-                </button>
+              {empireDropdownOpen && (
+                <div className={styles.classDropdownMenu}>
+                  <button
+                    className={styles.classDropdownClear}
+                    onClick={() => { setActiveEmpire(''); setEmpireDropdownOpen(false) }}
+                    disabled={!activeEmpire}
+                  >
+                    Clear
+                  </button>
+                  <div className={styles.classDropdownList}>
+                    {empires.map((empire) => (
+                      <button
+                        key={empire.id}
+                        className={`${styles.filterDropdownItem} ${activeEmpire === empire.id ? styles.filterDropdownItemActive : ''}`}
+                        onClick={() => { setActiveEmpire(empire.id); setEmpireDropdownOpen(false) }}
+                      >
+                        <span className={styles.empireDot} style={{ background: EMPIRE_COLORS[empire.id] }} />
+                        <span className={styles.classDropdownLabel}>{empire.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
-              <div className={styles.viewToggle}>
-                <button
-                  className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
-                  onClick={() => setView('grid')}
-                  title="Grid view"
-                >
-                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                    <rect x="0.65" y="0.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
-                    <rect x="7.65" y="0.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
-                    <rect x="0.65" y="7.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
-                    <rect x="7.65" y="7.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
-                  </svg>
-                </button>
-                <button
-                  className={`${styles.viewToggleBtn} ${viewMode === 'table' ? styles.viewToggleBtnActive : ''}`}
-                  onClick={() => setView('table')}
-                  title="Table view"
-                >
-                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                    <line x1="1" y1="2.5" x2="12" y2="2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-                    <line x1="1" y1="6.5" x2="12" y2="6.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-                    <line x1="1" y1="10.5" x2="12" y2="10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-                  </svg>
-                </button>
-              </div>
             </div>
-          </div>
 
-          <div className={styles.filterRow}>
+            {/* Tier dropdown */}
+            <div className={styles.classDropdown} ref={tierDropdownRef}>
+              <button
+                className={`${styles.filterBtn} ${styles.classDropdownToggle} ${activeTier !== 0 ? styles.filterBtnActive : ''}`}
+                onClick={() => setTierDropdownOpen((v) => !v)}
+                aria-expanded={tierDropdownOpen}
+                aria-haspopup="true"
+              >
+                {activeTier === 0 ? 'All Tiers' : `T${activeTier}`}
+                <svg className={styles.classDropdownChevron} width="10" height="6" viewBox="0 0 10 6" fill="none">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {tierDropdownOpen && (
+                <div className={styles.classDropdownMenu}>
+                  <button
+                    className={styles.classDropdownClear}
+                    onClick={() => { setActiveTier(0); setTierDropdownOpen(false) }}
+                    disabled={activeTier === 0}
+                  >
+                    Clear
+                  </button>
+                  <div className={styles.classDropdownList}>
+                    {tiers.map((tier) => (
+                      <button
+                        key={tier}
+                        className={`${styles.filterDropdownItem} ${activeTier === tier ? styles.filterDropdownItemActive : ''}`}
+                        onClick={() => { setActiveTier(tier); setTierDropdownOpen(false) }}
+                      >
+                        <span className={styles.classDropdownLabel}>T{tier}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Category dropdown */}
+            <div className={styles.classDropdown} ref={categoryDropdownRef}>
+              <button
+                className={`${styles.filterBtn} ${styles.classDropdownToggle} ${activeCategory ? styles.filterBtnActive : ''}`}
+                onClick={() => setCategoryDropdownOpen((v) => !v)}
+                aria-expanded={categoryDropdownOpen}
+                aria-haspopup="true"
+              >
+                {activeCategory || 'All Categories'}
+                <svg className={styles.classDropdownChevron} width="10" height="6" viewBox="0 0 10 6" fill="none">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {categoryDropdownOpen && (
+                <div className={styles.classDropdownMenu}>
+                  <button
+                    className={styles.classDropdownClear}
+                    onClick={() => { setActiveCategory(''); setCategoryDropdownOpen(false) }}
+                    disabled={!activeCategory}
+                  >
+                    Clear
+                  </button>
+                  <div className={styles.classDropdownList}>
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        className={`${styles.filterDropdownItem} ${activeCategory === cat ? styles.filterDropdownItemActive : ''}`}
+                        onClick={() => { setActiveCategory(cat); setCategoryDropdownOpen(false) }}
+                      >
+                        <span className={styles.classDropdownLabel}>{cat}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Class dropdown (multi-select) */}
             <div className={styles.classDropdown} ref={classDropdownRef}>
               <button
                 className={`${styles.filterBtn} ${styles.classDropdownToggle} ${activeClasses.size > 0 ? styles.filterBtnActive : ''}`}
@@ -590,22 +557,7 @@ export default function ShipsPage() {
               )}
             </div>
 
-            <button
-              className={`${styles.filterBtn} ${activeTier === 0 ? styles.filterBtnActive : ''}`}
-              onClick={() => setActiveTier(0)}
-            >
-              All Tiers
-            </button>
-            {tiers.map((tier) => (
-              <button
-                key={tier}
-                className={`${styles.filterBtn} ${activeTier === tier ? styles.filterBtnActive : ''}`}
-                onClick={() => setActiveTier(tier)}
-              >
-                T{tier}
-              </button>
-            ))}
-
+            {/* Search */}
             <input
               type="text"
               className={styles.searchInput}
@@ -613,6 +565,44 @@ export default function ShipsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+
+            {/* Right-side controls */}
+            <div className={styles.filterRowRight}>
+              {viewMode === 'grid' && (
+                <button
+                  className={`${styles.filterBtn} ${allExpanded ? styles.filterBtnActive : ''}`}
+                  onClick={toggleExpandAll}
+                >
+                  {allExpanded ? 'Collapse All' : 'Expand All'}
+                </button>
+              )}
+              <div className={styles.viewToggle}>
+                <button
+                  className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                  onClick={() => setView('grid')}
+                  title="Grid view"
+                >
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                    <rect x="0.65" y="0.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
+                    <rect x="7.65" y="0.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
+                    <rect x="0.65" y="7.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
+                    <rect x="7.65" y="7.65" width="4.7" height="4.7" rx="0.8" stroke="currentColor" strokeWidth="1.3"/>
+                  </svg>
+                </button>
+                <button
+                  className={`${styles.viewToggleBtn} ${viewMode === 'table' ? styles.viewToggleBtnActive : ''}`}
+                  onClick={() => setView('table')}
+                  title="Table view"
+                >
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                    <line x1="1" y1="2.5" x2="12" y2="2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    <line x1="1" y1="6.5" x2="12" y2="6.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    <line x1="1" y1="10.5" x2="12" y2="10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       )}

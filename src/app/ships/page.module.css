@@ -172,8 +172,6 @@
 .filterRow {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.75rem;
   align-items: center;
 }
 
@@ -309,6 +307,32 @@
   color: var(--chrome-silver);
 }
 
+/* Single-select dropdown items (Empire, Tier, Category) */
+.filterDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.35rem 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.filterDropdownItem:hover {
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.filterDropdownItemActive {
+  background: rgba(0, 212, 255, 0.12);
+}
+
+.filterDropdownItemActive .classDropdownLabel {
+  color: var(--plasma-cyan);
+}
+
 .searchInput {
   font-family: var(--font-jetbrains), 'JetBrains Mono', monospace;
   font-size: 0.8rem;
@@ -319,8 +343,9 @@
   border-radius: 4px;
   outline: none;
   transition: border-color 0.3s ease;
-  width: 320px;
-  margin-left: auto;
+  flex: 1;
+  min-width: 120px;
+  max-width: 320px;
 }
 
 .searchInput::placeholder {
